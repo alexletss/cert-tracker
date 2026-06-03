@@ -62,6 +62,12 @@
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.2s, color 0.2s; }
 .hidden { display: none !important; }
 
+/* Connection banner */
+.conn-banner { position: fixed; top: 0; left: 0; right: 0; padding: 8px 16px; text-align: center; font-size: 13px; font-weight: 500; z-index: 200; }
+.conn-error { background: var(--danger); color: white; }
+.conn-syncing { background: var(--warning); color: white; }
+.conn-ok { display: none; }
+
 /* Login */
 .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .login-card { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 40px; width: 100%; max-width: 380px; }
@@ -73,18 +79,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .login-card button:hover { background: var(--primary-hover); }
 .login-error { color: var(--danger); font-size: 13px; margin-bottom: 12px; text-align: center; }
 .login-theme { position: absolute; top: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: var(--text); }
+.login-info { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 12px; }
+.cloud-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--success); color: white; border-radius: 10px; font-size: 11px; font-weight: 600; }
 
 /* App */
 .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .topbar h1 { font-size: 18px; }
+.topbar h1 .cloud-badge { margin-left: 8px; vertical-align: middle; }
 .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
-/* Theme toggle */
 .theme-toggle { background: var(--secondary); color: var(--secondary-text); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 16px; }
 .theme-toggle:hover { background: var(--secondary-hover); }
 
-/* Tabs */
 .tabs { display: flex; gap: 4px; background: var(--surface); padding: 6px; border-radius: 10px; margin-bottom: 16px; box-shadow: var(--shadow-sm); overflow-x: auto; }
 .tab { flex: 1; min-width: 120px; padding: 10px 14px; background: transparent; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .tab:hover { background: var(--surface-2); }
@@ -92,7 +99,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .tab-badge { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 .tab:not(.active) .tab-badge { background: var(--surface-2); color: var(--text-muted); }
 
-/* Stats */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
 .stat { background: var(--surface); border-radius: 10px; padding: 16px; border-left: 4px solid #ccc; box-shadow: var(--shadow-sm); }
 .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -103,12 +109,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .stat-ok { border-left-color: var(--success); }
 .stat-dekret { border-left-color: var(--info); }
 
-/* Controls */
 .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
 .controls input, .controls select { padding: 8px 12px; border: 1px solid var(--border-input); border-radius: 8px; font-size: 14px; background: var(--surface); color: var(--text); }
 .controls input { flex: 1; min-width: 200px; }
 
-/* Buttons */
 .btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: var(--primary-hover); }
@@ -119,8 +123,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .btn-danger { background: var(--danger); color: white; }
 .btn-danger:hover { background: var(--danger-hover); }
 .btn-sm { padding: 4px 8px; font-size: 12px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Table */
 .table-wrap { background: var(--surface); border-radius: 10px; overflow: auto; box-shadow: var(--shadow-sm); max-height: 70vh; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead { position: sticky; top: 0; background: var(--surface-2); z-index: 10; }
@@ -136,7 +140,6 @@ tr:hover td { background: var(--surface-hover); }
 .empty { padding: 40px; text-align: center; color: var(--text-faint); }
 .purpose-tag { display: inline-block; padding: 2px 8px; background: var(--surface-2); border-radius: 4px; font-size: 11px; color: var(--text-muted); margin: 1px; }
 
-/* Modal */
 .modal-overlay { position: fixed; inset: 0; background: var(--modal-overlay); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
 .modal { background: var(--surface); border-radius: 12px; padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow: auto; color: var(--text); }
 .modal h2 { font-size: 18px; margin-bottom: 16px; }
@@ -148,6 +151,9 @@ tr:hover td { background: var(--surface-hover); }
 .modal .purpose-grid label { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: var(--surface-2); border-radius: 6px; margin: 0; font-size: 13px; cursor: pointer; color: var(--text); }
 .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
 
+.loader { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 @media (max-width: 640px) {
   .topbar { padding: 10px 12px; }
   .container { padding: 12px; }
@@ -157,6 +163,8 @@ tr:hover td { background: var(--surface-hover); }
 </style>
 </head>
 <body>
+
+<div id="connBanner" class="conn-banner conn-ok"></div>
 
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
@@ -169,15 +177,17 @@ tr:hover td { background: var(--surface-hover); }
   <label>Пароль</label>
   <input type="password" id="loginPass" autocomplete="current-password">
   <button onclick="login()">Войти</button>
+  <div class="login-info">☁️ Общая база — данные синхронизируются между всеми сотрудниками</div>
 </div>
 </div>
 
 <!-- APP -->
 <div id="appScreen" class="hidden">
 <div class="topbar">
-  <h1>📋 Учёт сертификатов сотрудников</h1>
+  <h1>📋 Учёт сертификатов <span class="cloud-badge">☁️ Облако</span></h1>
   <div class="topbar-actions">
     <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
+    <button class="btn btn-secondary" onclick="refreshData()" title="Обновить из базы">🔄</button>
     <button class="btn btn-primary" onclick="openAddModal()">+ Добавить</button>
     <button class="btn btn-secondary" onclick="exportJSON()">⬇ Экспорт</button>
     <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">⬆ Импорт</button>
@@ -187,7 +197,6 @@ tr:hover td { background: var(--surface-hover); }
 </div>
 
 <div class="container">
-  <!-- Department Tabs -->
   <div class="tabs" id="deptTabs"></div>
 
   <div class="stats">
@@ -217,9 +226,7 @@ tr:hover td { background: var(--surface-hover); }
 
   <div class="table-wrap">
     <table>
-      <thead>
-        <tr id="tableHead"></tr>
-      </thead>
+      <thead><tr id="tableHead"></tr></thead>
       <tbody id="tableBody"></tbody>
     </table>
   </div>
@@ -265,7 +272,7 @@ tr:hover td { background: var(--surface-hover); }
   </div>
   <div class="modal-actions">
     <button class="btn btn-secondary" onclick="closeFormModal()">Отмена</button>
-    <button class="btn btn-primary" onclick="saveForm()">Сохранить</button>
+    <button class="btn btn-primary" id="formSaveBtn" onclick="saveForm()">Сохранить</button>
   </div>
 </div>
 </div>
@@ -282,15 +289,19 @@ tr:hover td { background: var(--surface-hover); }
   <input type="date" id="renewNewDate">
   <div class="modal-actions">
     <button class="btn btn-secondary" onclick="closeRenewModal()">Отмена</button>
-    <button class="btn btn-success" onclick="saveRenew()">Обновить</button>
+    <button class="btn btn-success" id="renewSaveBtn" onclick="saveRenew()">Обновить</button>
   </div>
 </div>
 </div>
 
 <script>
+// ==================== CONFIG ====================
+const SUPABASE_URL = "https://fpvusjatdwqzedhgljru.supabase.co";
+const SUPABASE_KEY = "sb_publishable_GnvmwL6B_MPvDdiqDRljmA_VrfsX7da";
+const TABLE = "certificates";
+
 const AUTH_USER = "admin";
 const AUTH_PASS = "cert2026";
-const STORAGE_KEY = "cert_tracker_data_v2";
 const AUTH_KEY = "cert_tracker_auth_v1";
 const THEME_KEY = "cert_tracker_theme_v1";
 const DEPT_KEY = "cert_tracker_dept_v1";
@@ -304,8 +315,9 @@ const DEPARTMENTS = [
 
 let data = [];
 let currentDept = "admin";
+let realtimeChannel = null;
 
-// ===== THEME =====
+// ==================== THEME ====================
 function applyTheme(theme) {
 document.documentElement.setAttribute("data-theme", theme);
 const btn = document.getElementById("themeBtn");
@@ -322,7 +334,137 @@ applyTheme(next);
 }
 applyTheme(localStorage.getItem(THEME_KEY) || "light");
 
-// ===== AUTH =====
+// ==================== CONNECTION BANNER ====================
+function setBanner(state, msg) {
+const el = document.getElementById("connBanner");
+el.className = "conn-banner";
+if (state === "error") { el.classList.add("conn-error"); el.textContent = "⚠️ " + msg; }
+else if (state === "syncing") { el.classList.add("conn-syncing"); el.textContent = "⏳ " + msg; }
+else { el.classList.add("conn-ok"); el.textContent = ""; }
+}
+
+// ==================== SUPABASE API ====================
+async function sbFetch(path, options = {}) {
+const url = SUPABASE_URL + "/rest/v1/" + path;
+const headers = {
+  "apikey": SUPABASE_KEY,
+  "Authorization": "Bearer " + SUPABASE_KEY,
+  "Content-Type": "application/json",
+  "Prefer": "return=representation",
+  ...(options.headers || {})
+};
+const res = await fetch(url, { ...options, headers });
+if (!res.ok) {
+  const text = await res.text();
+  throw new Error(`Supabase ${res.status}: ${text}`);
+}
+if (res.status === 204) return null;
+return res.json();
+}
+
+async function sbList() {
+return await sbFetch(`${TABLE}?select=*&order=lastname.asc`);
+}
+async function sbInsert(row) {
+return await sbFetch(TABLE, { method: "POST", body: JSON.stringify(row) });
+}
+async function sbUpdate(id, row) {
+return await sbFetch(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(row) });
+}
+async function sbDelete(id) {
+return await sbFetch(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+async function sbUpsertMany(rows) {
+return await sbFetch(TABLE, {
+  method: "POST",
+  headers: { "Prefer": "resolution=merge-duplicates,return=representation" },
+  body: JSON.stringify(rows)
+});
+}
+
+function dbToJs(row) {
+return {
+  id: row.id,
+  dept: row.dept || "admin",
+  lastname: row.lastname || "",
+  firstname: row.firstname || "",
+  middlename: row.middlename || "",
+  treasury: !!row.treasury,
+  purposes: Array.isArray(row.purposes) ? row.purposes : (row.purposes ? JSON.parse(row.purposes) : []),
+  expiry: row.expiry || "",
+  oldExpiry: row.old_expiry || "",
+  dekret: !!row.dekret,
+};
+}
+function jsToDb(p) {
+return {
+  id: p.id,
+  dept: p.dept || "admin",
+  lastname: p.lastname || "",
+  firstname: p.firstname || "",
+  middlename: p.middlename || "",
+  treasury: !!p.treasury,
+  purposes: p.purposes || [],
+  expiry: p.expiry || null,
+  old_expiry: p.oldExpiry || null,
+  dekret: !!p.dekret,
+};
+}
+
+// ==================== REALTIME ====================
+function startRealtime() {
+if (realtimeChannel) return;
+try {
+  const wsUrl = SUPABASE_URL.replace(/^https/, "wss") + "/realtime/v1/websocket?apikey=" + encodeURIComponent(SUPABASE_KEY) + "&vsn=1.0.0";
+  const ws = new WebSocket(wsUrl);
+  realtimeChannel = ws;
+  let heartbeat;
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      topic: "realtime:public:" + TABLE,
+      event: "phx_join",
+      payload: { config: { postgres_changes: [{ event: "*", schema: "public", table: TABLE }] } },
+      ref: "1"
+    }));
+    heartbeat = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: "hb" }));
+      }
+    }, 25000);
+  };
+
+  ws.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.event === "postgres_changes" && msg.payload && msg.payload.data) {
+        const change = msg.payload.data;
+        const type = change.type;
+        if (type === "INSERT" || type === "UPDATE") {
+          const row = dbToJs(change.record);
+          const idx = data.findIndex(x => x.id === row.id);
+          if (idx === -1) data.push(row);
+          else data[idx] = row;
+        } else if (type === "DELETE") {
+          data = data.filter(x => x.id !== change.old_record.id);
+        }
+        render();
+      }
+    } catch (err) {}
+  };
+
+  ws.onclose = () => {
+    clearInterval(heartbeat);
+    realtimeChannel = null;
+    if (!document.getElementById("appScreen").classList.contains("hidden")) {
+      setTimeout(startRealtime, 3000);
+    }
+  };
+  ws.onerror = () => {};
+} catch (err) {}
+}
+
+// ==================== AUTH ====================
 function login() {
 const u = document.getElementById("loginUser").value.trim();
 const p = document.getElementById("loginPass").value;
@@ -338,43 +480,84 @@ if (u === AUTH_USER && p === AUTH_PASS) {
 }
 function logout() {
 localStorage.removeItem(AUTH_KEY);
+if (realtimeChannel) { try { realtimeChannel.close(); } catch(e){} realtimeChannel = null; }
 document.getElementById("appScreen").classList.add("hidden");
 document.getElementById("loginScreen").classList.remove("hidden");
 document.getElementById("loginUser").value = "";
 document.getElementById("loginPass").value = "";
+setBanner("ok");
 }
-function showApp() {
+async function showApp() {
 document.getElementById("loginScreen").classList.add("hidden");
 document.getElementById("appScreen").classList.remove("hidden");
-loadData();
 currentDept = localStorage.getItem(DEPT_KEY) || "admin";
 renderTabs();
-render();
+await refreshData();
+await migrateFromLocalStorage();
+startRealtime();
 }
 
 document.getElementById("loginPass").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
 document.getElementById("loginUser").addEventListener("keypress", e => { if (e.key === "Enter") document.getElementById("loginPass").focus(); });
 
-// ===== DATA =====
-function loadData() {
-const raw = localStorage.getItem(STORAGE_KEY);
-data = raw ? JSON.parse(raw) : [];
-// migrate v1 -> v2 (assign dept=admin if missing)
-const oldRaw = localStorage.getItem("cert_tracker_data_v1");
-if (oldRaw && data.length === 0) {
-  const old = JSON.parse(oldRaw);
-  data = old.map(p => ({ ...p, dept: p.dept || "admin", purposes: p.purposes || [] }));
-  saveData();
+// ==================== DATA OPS ====================
+async function refreshData() {
+setBanner("syncing", "Загрузка из облака...");
+try {
+  const rows = await sbList();
+  data = rows.map(dbToJs);
+  setBanner("ok");
+  render();
+} catch (err) {
+  console.error(err);
+  setBanner("error", "Нет связи с базой. Проверь интернет. " + err.message);
 }
-data = data.map(p => ({ dept: "admin", purposes: [], ...p }));
 }
-function saveData() {
-localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+async function migrateFromLocalStorage() {
+const local = localStorage.getItem("cert_tracker_data_v2") || localStorage.getItem("cert_tracker_data_v1");
+if (!local) return;
+if (localStorage.getItem("cert_tracker_migrated_v1") === "1") return;
+try {
+  const localData = JSON.parse(local);
+  if (!Array.isArray(localData) || localData.length === 0) {
+    localStorage.setItem("cert_tracker_migrated_v1", "1");
+    return;
+  }
+  if (data.length > 0) {
+    localStorage.setItem("cert_tracker_migrated_v1", "1");
+    return;
+  }
+  if (!confirm(`Найдено ${localData.length} локальных записей. Перенести их в облачную базу?`)) {
+    localStorage.setItem("cert_tracker_migrated_v1", "1");
+    return;
+  }
+  setBanner("syncing", "Перенос локальных данных в облако...");
+  const rows = localData.map(p => jsToDb({
+    id: p.id || genId(),
+    dept: p.dept || "admin",
+    lastname: p.lastname || "",
+    firstname: p.firstname || "",
+    middlename: p.middlename || "",
+    treasury: !!p.treasury,
+    purposes: p.purposes || [],
+    expiry: p.expiry || "",
+    oldExpiry: p.oldExpiry || "",
+    dekret: !!p.dekret,
+  }));
+  await sbUpsertMany(rows);
+  localStorage.setItem("cert_tracker_migrated_v1", "1");
+  await refreshData();
+  alert(`Перенесено: ${rows.length} записей`);
+} catch (err) {
+  console.error(err);
+  setBanner("error", "Ошибка миграции: " + err.message);
+}
 }
 
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
-// ===== TABS =====
+// ==================== TABS ====================
 function renderTabs() {
 const tabsEl = document.getElementById("deptTabs");
 tabsEl.innerHTML = DEPARTMENTS.map(d => {
@@ -391,7 +574,7 @@ renderTabs();
 render();
 }
 
-// ===== STATUS LOGIC =====
+// ==================== STATUS ====================
 function computeStatus(person) {
 if (person.dekret) return { key: "dekret", label: "Декрет", cls: "status-dekret" };
 if (!person.expiry) return { key: "none", label: "—", cls: "" };
@@ -402,30 +585,18 @@ if (diffDays < 0) return { key: "expired", label: "Просрочен", cls: "st
 if (diffDays <= 61) return { key: "soon", label: "Меньше 2 месяцев", cls: "status-soon" };
 return { key: "ok", label: "Больше 2 месяцев", cls: "status-ok" };
 }
-
 function formatDate(iso) {
 if (!iso) return "";
 const [y,m,d] = iso.split("-");
 return `${d}.${m}.${y}`;
 }
 
-// ===== RENDER =====
+// ==================== RENDER ====================
 function renderTableHead() {
 const head = document.getElementById("tableHead");
-const cols = [
-  "<th>№</th>",
-  "<th>Фамилия</th>",
-  "<th>Имя</th>",
-  "<th>Отчество</th>",
-  "<th>Казн.</th>",
-];
+const cols = ["<th>№</th>","<th>Фамилия</th>","<th>Имя</th>","<th>Отчество</th>","<th>Казн.</th>"];
 if (currentDept === "admin") cols.push("<th>Цель использования</th>");
-cols.push(
-  "<th>Срок действия</th>",
-  "<th>Срок старого</th>",
-  "<th>Статус</th>",
-  "<th>Действия</th>"
-);
+cols.push("<th>Срок действия</th>","<th>Срок старого</th>","<th>Статус</th>","<th>Действия</th>");
 head.innerHTML = cols.join("");
 }
 
@@ -497,17 +668,15 @@ document.getElementById("statDekret").textContent = all.filter(s => s.key === "d
 
 renderTabs();
 }
-
 function escapeHtml(s) {
 return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
 }
 
-// ===== MODALS =====
+// ==================== FORM ====================
 function togglePurposeField() {
 const dept = document.getElementById("formDept").value;
 document.getElementById("purposeWrap").style.display = dept === "admin" ? "block" : "none";
 }
-
 function openAddModal() {
 document.getElementById("formTitle").textContent = "Добавить сотрудника";
 document.getElementById("formId").value = "";
@@ -542,7 +711,7 @@ document.getElementById("formModal").classList.remove("hidden");
 }
 function closeFormModal() { document.getElementById("formModal").classList.add("hidden"); }
 
-function saveForm() {
+async function saveForm() {
 const id = document.getElementById("formId").value;
 const dept = document.getElementById("formDept").value;
 const purposes = dept === "admin"
@@ -559,28 +728,48 @@ const payload = {
   purposes,
 };
 if (!payload.lastname || !payload.firstname) {
-  alert("Заполните фамилию и имя");
-  return;
-}
-if (id) {
-  const idx = data.findIndex(x => x.id === id);
-  if (idx !== -1) data[idx] = { ...data[idx], ...payload };
-} else {
-  data.push({ id: genId(), oldExpiry: "", ...payload });
-}
-saveData();
-closeFormModal();
-if (dept !== currentDept) switchDept(dept);
-else render();
+  alert("Заполните фамилию и имя"); return;
 }
 
-function deleteRow(id) {
+const btn = document.getElementById("formSaveBtn");
+btn.disabled = true;
+const oldText = btn.textContent;
+btn.innerHTML = '<span class="loader"></span> Сохранение...';
+
+try {
+  if (id) {
+    const existing = data.find(x => x.id === id);
+    const merged = { ...existing, ...payload };
+    await sbUpdate(id, jsToDb(merged));
+    const idx = data.findIndex(x => x.id === id);
+    if (idx !== -1) data[idx] = merged;
+  } else {
+    const newRow = { id: genId(), oldExpiry: "", ...payload };
+    await sbInsert(jsToDb(newRow));
+    data.push(newRow);
+  }
+  closeFormModal();
+  if (dept !== currentDept) switchDept(dept);
+  else render();
+} catch (err) {
+  alert("Не удалось сохранить: " + err.message);
+} finally {
+  btn.disabled = false;
+  btn.textContent = oldText;
+}
+}
+
+async function deleteRow(id) {
 const p = data.find(x => x.id === id);
 if (!p) return;
 if (!confirm(`Удалить запись: ${p.lastname} ${p.firstname}?`)) return;
-data = data.filter(x => x.id !== id);
-saveData();
-render();
+try {
+  await sbDelete(id);
+  data = data.filter(x => x.id !== id);
+  render();
+} catch (err) {
+  alert("Не удалось удалить: " + err.message);
+}
 }
 
 function openRenewModal(id) {
@@ -594,20 +783,33 @@ document.getElementById("renewModal").classList.remove("hidden");
 }
 function closeRenewModal() { document.getElementById("renewModal").classList.add("hidden"); }
 
-function saveRenew() {
+async function saveRenew() {
 const id = document.getElementById("renewId").value;
 const newDate = document.getElementById("renewNewDate").value;
 if (!newDate) { alert("Укажите новую дату"); return; }
 const idx = data.findIndex(x => x.id === id);
 if (idx === -1) return;
-data[idx].oldExpiry = data[idx].expiry || "";
-data[idx].expiry = newDate;
-saveData();
-closeRenewModal();
-render();
+
+const btn = document.getElementById("renewSaveBtn");
+btn.disabled = true;
+const oldText = btn.textContent;
+btn.innerHTML = '<span class="loader"></span> Сохранение...';
+
+try {
+  const updated = { ...data[idx], oldExpiry: data[idx].expiry || "", expiry: newDate };
+  await sbUpdate(id, jsToDb(updated));
+  data[idx] = updated;
+  closeRenewModal();
+  render();
+} catch (err) {
+  alert("Не удалось обновить: " + err.message);
+} finally {
+  btn.disabled = false;
+  btn.textContent = oldText;
+}
 }
 
-// ===== EXPORT / IMPORT =====
+// ==================== EXPORT / IMPORT ====================
 function exportJSON() {
 const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
 const url = URL.createObjectURL(blob);
@@ -617,20 +819,33 @@ a.download = `certificates_${new Date().toISOString().slice(0,10)}.json`;
 a.click();
 URL.revokeObjectURL(url);
 }
-function importJSON(event) {
+async function importJSON(event) {
 const file = event.target.files[0];
 if (!file) return;
 const reader = new FileReader();
-reader.onload = e => {
+reader.onload = async e => {
   try {
     const imported = JSON.parse(e.target.result);
     if (!Array.isArray(imported)) throw new Error("Файл должен содержать массив");
-    if (!confirm(`Импортировать ${imported.length} записей? Текущие данные будут заменены.`)) return;
-    data = imported.map(p => ({ id: p.id || genId(), oldExpiry: "", dept: "admin", purposes: [], ...p }));
-    saveData();
-    render();
-    alert(`Импортировано: ${data.length} записей`);
+    if (!confirm(`Импортировать ${imported.length} записей в облачную базу? Существующие записи с такими же ID будут обновлены.`)) return;
+    setBanner("syncing", "Импорт в облако...");
+    const rows = imported.map(p => jsToDb({
+      id: p.id || genId(),
+      dept: p.dept || "admin",
+      lastname: p.lastname || "",
+      firstname: p.firstname || "",
+      middlename: p.middlename || "",
+      treasury: !!p.treasury,
+      purposes: p.purposes || [],
+      expiry: p.expiry || "",
+      oldExpiry: p.oldExpiry || "",
+      dekret: !!p.dekret,
+    }));
+    await sbUpsertMany(rows);
+    await refreshData();
+    alert(`Импортировано: ${rows.length} записей`);
   } catch (err) {
+    setBanner("error", "Ошибка импорта: " + err.message);
     alert("Ошибка чтения файла: " + err.message);
   }
 };
@@ -638,7 +853,7 @@ reader.readAsText(file);
 event.target.value = "";
 }
 
-// ===== INIT =====
+// ==================== INIT ====================
 if (localStorage.getItem(AUTH_KEY) === "1") {
 showApp();
 }
