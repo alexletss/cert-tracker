@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Учёт сертификатов — локальный сервер</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #fff; }
+.card { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 24px; padding: 48px; max-width: 600px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.logo { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, #60a5fa 0%, #1e40af 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.logo svg { width: 52px; height: 52px; }
+h1 { font-size: 28px; text-align: center; margin-bottom: 12px; font-weight: 700; letter-spacing: -0.02em; }
+.sub { text-align: center; opacity: 0.85; margin-bottom: 32px; font-size: 15px; line-height: 1.5; }
+.status { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px; margin-bottom: 24px; }
+.status-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.status-row:last-child { border-bottom: none; }
+.status-row .label { opacity: 0.75; }
+.status-row .value { font-weight: 600; font-family: ui-monospace, monospace; font-size: 13px; }
+.badge { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+.badge-ok { background: #10b981; color: white; }
+.badge-err { background: #ef4444; color: white; }
+.badge-wait { background: #f59e0b; color: white; }
+.note { background: rgba(0,0,0,0.25); border-left: 3px solid #fbbf24; padding: 16px 20px; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+.note strong { color: #fbbf24; }
+code { background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 5px; font-size: 12px; font-family: ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<div class="card">
+<div class="logo">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <g fill="#ffffff">
+      <path d="M22 38h16V22h14v16h16v14H52v16H38V52H22z"/>
+      <path d="M48 62h16V46h14v16h16v14H78v16H64V76H48z" opacity="0.85"/>
+    </g>
+  </svg>
+</div>
+<h1>Локальный сервер запущен</h1>
+<div class="sub">Сервер «Учёт сертификатов» работает в локальной сети.<br>Сюда нужно положить файл сайта.</div>
+
+<div class="status">
+  <div class="status-row">
+    <span class="label">Веб-сервер (nginx)</span>
+    <span class="badge badge-ok">работает</span>
+  </div>
+  <div class="status-row">
+    <span class="label">Postgres</span>
+    <span class="value" id="pgStatus">проверка...</span>
+  </div>
+  <div class="status-row">
+    <span class="label">REST API (Kong → PostgREST)</span>
+    <span class="value" id="restStatus">проверка...</span>
+  </div>
+  <div class="status-row">
+    <span class="label">Storage</span>
+    <span class="value" id="storageStatus">проверка...</span>
+  </div>
+  <div class="status-row">
+    <span class="label">Realtime</span>
+    <span class="value" id="rtStatus">проверка...</span>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Следующий шаг:</strong> замени этот файл на основной <code>index.html</code> приложения, в котором две константы (<code>SUPABASE_URL</code> и <code>SUPABASE_KEY</code>) изменены под локальный сервер.<br><br>
+  Подробная инструкция в файле <code>local-deploy/README.md</code>, раздел «Шаг 8. Подмена index.html».
+</div>
+</div>
+
+<script>
+async function check(url, elId) {
+const el = document.getElementById(elId);
+try {
+  const res = await fetch(url, { method: "GET", mode: "cors" });
+  el.innerHTML = res.ok || res.status < 500 ? '<span class="badge badge-ok">работает</span>' : '<span class="badge badge-err">ошибка</span>';
+} catch (e) {
+  el.innerHTML = '<span class="badge badge-err">недоступно</span>';
+}
+}
+
+const host = location.hostname;
+check("http://" + host + ":8000/rest/v1/", "restStatus");
+check("http://" + host + ":8000/storage/v1/bucket", "storageStatus");
+check("http://" + host + ":4000/api/health", "rtStatus");
+document.getElementById("pgStatus").innerHTML = '<span class="badge badge-ok">работает (порт 5432)</span>';
+</script>
+</body>
+</html>
