@@ -6,61 +6,79 @@
 <title>Учёт сертификатов</title>
 <style>
 :root {
-  --bg: #f5f7fa;
+  --bg: #f4f6fa;
   --surface: #ffffff;
   --surface-2: #f0f3f7;
-  --surface-hover: #fafbfc;
-  --text: #1a1a1a;
-  --text-muted: #666;
-  --text-faint: #888;
-  --border: #e4e7eb;
-  --border-input: #d0d5dd;
-  --primary: #4a90e2;
-  --primary-hover: #357ac9;
-  --secondary: #e4e7eb;
-  --secondary-hover: #d4d8dc;
-  --secondary-text: #333;
-  --success: #93C47D;
-  --success-hover: #7aae64;
-  --danger: #E06666;
-  --danger-hover: #c54f4f;
-  --warning: #F6B26B;
-  --info: #7BD3F7;
-  --info-text: #003a5c;
-  --shadow: 0 4px 20px rgba(0,0,0,0.08);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-  --modal-overlay: rgba(0,0,0,0.5);
+  --surface-hover: #f7f9fc;
+  --text: #161b22;
+  --text-muted: #5b6470;
+  --text-faint: #8a93a0;
+  --border: #e4e8ee;
+  --border-input: #d0d6de;
+  --primary: #4a7df0;
+  --primary-hover: #3a68d8;
+  --primary-soft: #eaf0fe;
+  --secondary: #eaedf2;
+  --secondary-hover: #dde2e9;
+  --secondary-text: #2a313b;
+  --success: #4caf50;
+  --success-hover: #3d9b41;
+  --success-soft: #e7f5e8;
+  --danger: #e53e3e;
+  --danger-hover: #c63333;
+  --danger-soft: #fdecec;
+  --warning: #f59e0b;
+  --warning-soft: #fef4e2;
+  --info: #2dc4d6;
+  --info-soft: #e0f7fa;
+  --info-text: #00525b;
+  --shadow: 0 8px 32px rgba(20, 30, 60, 0.10);
+  --shadow-sm: 0 1px 3px rgba(20, 30, 60, 0.06);
+  --shadow-md: 0 4px 12px rgba(20, 30, 60, 0.08);
+  --modal-overlay: rgba(20, 25, 40, 0.55);
+  --sidebar-bg: #ffffff;
 }
 [data-theme="dark"] {
-  --bg: #0f1419;
-  --surface: #1a1f26;
-  --surface-2: #232a33;
-  --surface-hover: #242b35;
-  --text: #e8eaed;
-  --text-muted: #9aa0a6;
-  --text-faint: #777f8a;
-  --border: #2d3540;
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #1f2630;
+  --surface-hover: #222936;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --text-faint: #6a737d;
+  --border: #2a313c;
   --border-input: #3a4250;
-  --primary: #5da3f0;
-  --primary-hover: #4a90e2;
-  --secondary: #2d3540;
-  --secondary-hover: #3a4250;
-  --secondary-text: #e8eaed;
-  --success: #93C47D;
-  --success-hover: #a8d693;
-  --danger: #E06666;
-  --danger-hover: #ec7c7c;
-  --warning: #F6B26B;
-  --info: #7BD3F7;
-  --info-text: #003a5c;
-  --shadow: 0 4px 20px rgba(0,0,0,0.4);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --modal-overlay: rgba(0,0,0,0.7);
+  --primary: #5b8ef5;
+  --primary-hover: #4a7df0;
+  --primary-soft: #1a2742;
+  --secondary: #283040;
+  --secondary-hover: #353e51;
+  --secondary-text: #e6edf3;
+  --success: #5dc465;
+  --success-hover: #6dd474;
+  --success-soft: #1a3220;
+  --danger: #e76f6f;
+  --danger-hover: #f08080;
+  --danger-soft: #3a1f1f;
+  --warning: #f5b148;
+  --warning-soft: #3a2a14;
+  --info: #4dd6e6;
+  --info-soft: #143540;
+  --info-text: #b0e4ec;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --modal-overlay: rgba(0, 0, 0, 0.7);
+  --sidebar-bg: #161b22;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.2s, color 0.2s; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.2s, color 0.2s; -webkit-font-smoothing: antialiased; }
 .hidden { display: none !important; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-input); }
 
 /* Connection banner */
 .conn-banner { position: fixed; top: 0; left: 0; right: 0; padding: 8px 16px; text-align: center; font-size: 13px; font-weight: 500; z-index: 200; }
@@ -69,39 +87,69 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .conn-ok { display: none; }
 
 /* Login */
-.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-card { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 40px; width: 100%; max-width: 380px; }
-.login-card h1 { font-size: 22px; margin-bottom: 24px; text-align: center; color: var(--text); }
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; }
+.login-card { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 40px; width: 100%; max-width: 400px; }
+.login-card h1 { font-size: 24px; margin-bottom: 6px; text-align: center; color: var(--text); }
+.login-card .login-sub { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
 .login-card label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-muted); }
-.login-card input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-input); border-radius: 8px; font-size: 14px; margin-bottom: 16px; background: var(--surface); color: var(--text); }
-.login-card input:focus { outline: none; border-color: var(--primary); }
-.login-card button { width: 100%; padding: 11px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.login-card input { width: 100%; padding: 11px 14px; border: 1px solid var(--border-input); border-radius: 10px; font-size: 14px; margin-bottom: 16px; background: var(--surface); color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; }
+.login-card input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.login-card button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
 .login-card button:hover { background: var(--primary-hover); }
 .login-error { color: var(--danger); font-size: 13px; margin-bottom: 12px; text-align: center; }
-.login-theme { position: absolute; top: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: var(--text); }
-.login-info { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 12px; }
-.cloud-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--success); color: white; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.login-theme { position: absolute; top: 20px; right: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: var(--text); box-shadow: var(--shadow-sm); }
+.login-info { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 14px; }
+.cloud-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; background: var(--success); color: white; border-radius: 12px; font-size: 11px; font-weight: 600; }
 
-/* App */
-.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-.topbar h1 { font-size: 18px; }
-.topbar h1 .cloud-badge { margin-left: 8px; vertical-align: middle; }
+/* App layout */
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 50; }
+.topbar h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
 .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
-.theme-toggle { background: var(--secondary); color: var(--secondary-text); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 16px; }
-.theme-toggle:hover { background: var(--secondary-hover); }
+.layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; padding: 20px; }
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { order: 2; }
+}
 
-.tabs { display: flex; gap: 4px; background: var(--surface); padding: 6px; border-radius: 10px; margin-bottom: 16px; box-shadow: var(--shadow-sm); overflow-x: auto; }
-.tab { flex: 1; min-width: 120px; padding: 10px 14px; background: transparent; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+/* Sidebar */
+.sidebar { background: var(--sidebar-bg); border-radius: 14px; padding: 18px; box-shadow: var(--shadow-sm); height: fit-content; position: sticky; top: 80px; }
+.sidebar h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 14px; font-weight: 600; }
+.dept-stat { padding: 12px; border-radius: 10px; margin-bottom: 8px; background: var(--surface-2); cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
+.dept-stat:hover { background: var(--surface-hover); border-color: var(--border); }
+.dept-stat.active { background: var(--primary-soft); border-color: var(--primary); }
+.dept-stat-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.dept-stat-name { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; color: var(--text); }
+.dept-stat-total { font-size: 11px; color: var(--text-muted); background: var(--surface); padding: 2px 8px; border-radius: 10px; }
+.dept-stat-rows { display: grid; gap: 4px; font-size: 12px; }
+.dept-stat-row { display: flex; justify-content: space-between; color: var(--text-muted); }
+.dept-stat-row .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.dot-expired { background: var(--danger); }
+.dot-soon { background: var(--warning); }
+.dot-ok { background: var(--success); }
+.dot-dekret { background: var(--info); }
+.sidebar-divider { height: 1px; background: var(--border); margin: 14px 0; }
+.sidebar-total { padding: 12px; background: var(--primary-soft); border-radius: 10px; }
+.sidebar-total-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+.sidebar-total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; font-size: 13px; }
+.sidebar-total-row strong { font-size: 16px; color: var(--text); }
+
+/* Main */
+.main { min-width: 0; }
+
+/* Tabs (compact for mobile + works alongside sidebar) */
+.tabs { display: flex; gap: 4px; background: var(--surface); padding: 6px; border-radius: 12px; margin-bottom: 16px; box-shadow: var(--shadow-sm); overflow-x: auto; }
+.tab { flex: 1; min-width: 110px; padding: 10px 14px; background: transparent; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .tab:hover { background: var(--surface-2); }
-.tab.active { background: var(--primary); color: white; }
-.tab-badge { background: rgba(255,255,255,0.25); padding: 1px 7px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.tab.active { background: var(--primary); color: white; box-shadow: 0 2px 6px rgba(74, 125, 240, 0.3); }
+.tab-badge { background: rgba(255,255,255,0.25); padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 .tab:not(.active) .tab-badge { background: var(--surface-2); color: var(--text-muted); }
 
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
-.stat { background: var(--surface); border-radius: 10px; padding: 16px; border-left: 4px solid #ccc; box-shadow: var(--shadow-sm); }
-.stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+/* Top stats (for selected dept) */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.stat { background: var(--surface); border-radius: 12px; padding: 14px 16px; border-left: 4px solid #ccc; box-shadow: var(--shadow-sm); transition: transform 0.1s; }
+.stat:hover { transform: translateY(-1px); }
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 .stat-value { font-size: 26px; font-weight: 700; margin-top: 4px; color: var(--text); }
 .stat-total { border-left-color: var(--primary); }
 .stat-expired { border-left-color: var(--danger); }
@@ -110,10 +158,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .stat-dekret { border-left-color: var(--info); }
 
 .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
-.controls input, .controls select { padding: 8px 12px; border: 1px solid var(--border-input); border-radius: 8px; font-size: 14px; background: var(--surface); color: var(--text); }
+.controls input, .controls select { padding: 9px 13px; border: 1px solid var(--border-input); border-radius: 10px; font-size: 14px; background: var(--surface); color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; }
+.controls input:focus, .controls select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 .controls input { flex: 1; min-width: 200px; }
 
-.btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.btn { padding: 9px 14px; border: none; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: var(--primary-hover); }
 .btn-secondary { background: var(--secondary); color: var(--secondary-text); }
@@ -122,43 +171,82 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .btn-success:hover { background: var(--success-hover); }
 .btn-danger { background: var(--danger); color: white; }
 .btn-danger:hover { background: var(--danger-hover); }
-.btn-sm { padding: 4px 8px; font-size: 12px; }
+.btn-ghost { background: transparent; color: var(--text-muted); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn-sm { padding: 5px 9px; font-size: 12px; border-radius: 8px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.table-wrap { background: var(--surface); border-radius: 10px; overflow: auto; box-shadow: var(--shadow-sm); max-height: 70vh; }
+/* Table */
+.table-wrap { background: var(--surface); border-radius: 12px; overflow: auto; box-shadow: var(--shadow-sm); max-height: 65vh; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead { position: sticky; top: 0; background: var(--surface-2); z-index: 10; }
-th { padding: 10px 8px; text-align: left; font-weight: 600; color: var(--text); border-bottom: 2px solid var(--border); white-space: nowrap; font-size: 12px; }
-td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+th { padding: 11px 10px; text-align: left; font-weight: 600; color: var(--text); border-bottom: 2px solid var(--border); white-space: nowrap; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+tr { cursor: pointer; transition: background 0.1s; }
 tr:hover td { background: var(--surface-hover); }
-.status-cell { font-weight: 600; text-align: center; padding: 6px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; }
-.status-expired { background: var(--danger); color: white; }
-.status-soon { background: var(--warning); color: white; }
-.status-ok { background: var(--success); color: white; }
-.status-dekret { background: var(--info); color: var(--info-text); }
+tbody tr:last-child td { border-bottom: none; }
+.status-cell { display: inline-block; font-weight: 600; text-align: center; padding: 4px 10px; border-radius: 12px; font-size: 11px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px; }
+.status-expired { background: var(--danger-soft); color: var(--danger); }
+.status-soon { background: var(--warning-soft); color: var(--warning); }
+.status-ok { background: var(--success-soft); color: var(--success); }
+.status-dekret { background: var(--info-soft); color: var(--info-text); }
 .actions-cell { display: flex; gap: 4px; white-space: nowrap; }
-.empty { padding: 40px; text-align: center; color: var(--text-faint); }
-.purpose-tag { display: inline-block; padding: 2px 8px; background: var(--surface-2); border-radius: 4px; font-size: 11px; color: var(--text-muted); margin: 1px; }
+.empty { padding: 50px 20px; text-align: center; color: var(--text-faint); }
+.empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+.purpose-tag { display: inline-block; padding: 2px 8px; background: var(--primary-soft); color: var(--primary); border-radius: 5px; font-size: 11px; margin: 1px; font-weight: 500; }
+.file-icon { font-size: 14px; }
 
-.modal-overlay { position: fixed; inset: 0; background: var(--modal-overlay); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-.modal { background: var(--surface); border-radius: 12px; padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow: auto; color: var(--text); }
-.modal h2 { font-size: 18px; margin-bottom: 16px; }
-.modal label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--text-muted); margin-top: 12px; }
-.modal input[type="text"], .modal input[type="date"], .modal select { width: 100%; padding: 8px 12px; border: 1px solid var(--border-input); border-radius: 8px; font-size: 14px; background: var(--surface); color: var(--text); }
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: var(--modal-overlay); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; backdrop-filter: blur(2px); }
+.modal { background: var(--surface); border-radius: 14px; padding: 24px; width: 100%; max-width: 520px; max-height: 90vh; overflow: auto; color: var(--text); box-shadow: var(--shadow); }
+.modal-lg { max-width: 640px; }
+.modal h2 { font-size: 19px; margin-bottom: 4px; }
+.modal .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+.modal label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--text-muted); margin-top: 14px; }
+.modal input[type="text"], .modal input[type="date"], .modal select { width: 100%; padding: 9px 13px; border: 1px solid var(--border-input); border-radius: 10px; font-size: 14px; background: var(--surface); color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; }
+.modal input:focus, .modal select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 .modal .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .modal .checkbox-row label { margin: 0; cursor: pointer; }
 .modal .purpose-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-.modal .purpose-grid label { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: var(--surface-2); border-radius: 6px; margin: 0; font-size: 13px; cursor: pointer; color: var(--text); }
-.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.modal .purpose-grid label { display: flex; align-items: center; gap: 6px; padding: 9px 11px; background: var(--surface-2); border-radius: 8px; margin: 0; font-size: 13px; cursor: pointer; color: var(--text); transition: background 0.1s; }
+.modal .purpose-grid label:hover { background: var(--surface-hover); }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+
+/* Confirm modal */
+.confirm-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--danger-soft); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px; }
+.confirm-modal { max-width: 400px; text-align: center; }
+.confirm-modal h2 { font-size: 18px; margin-bottom: 8px; }
+.confirm-modal .modal-sub { margin-bottom: 20px; }
+.confirm-modal .modal-actions { justify-content: center; }
+
+/* File upload */
+.file-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.file-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding: 8px 10px; background: var(--surface-2); border-radius: 8px; }
+.file-row .file-name { flex: 1; font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-row .file-name a { color: var(--primary); text-decoration: none; }
+.file-row .file-name a:hover { text-decoration: underline; }
+.file-row .file-empty { color: var(--text-faint); font-style: italic; }
+.file-upload-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; background: var(--primary); color: white; border-radius: 6px; cursor: pointer; font-size: 12px; border: none; }
+.file-upload-btn:hover { background: var(--primary-hover); }
+.file-upload-btn input { display: none; }
+
+/* Profile modal */
+.profile-row { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.profile-row:last-child { border-bottom: none; }
+.profile-label { font-size: 12px; color: var(--text-muted); min-width: 130px; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+.profile-value { flex: 1; font-size: 14px; color: var(--text); }
+.profile-status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
 
 .loader { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 640px) {
   .topbar { padding: 10px 12px; }
-  .container { padding: 12px; }
-  th, td { padding: 6px 4px; font-size: 12px; }
-  .tab { min-width: 100px; padding: 8px 10px; font-size: 13px; }
+  .layout { padding: 12px; gap: 12px; }
+  .sidebar { position: static; padding: 14px; }
+  th, td { padding: 8px 6px; font-size: 12px; }
+  .tab { min-width: 90px; padding: 8px 10px; font-size: 13px; }
+  .modal { padding: 18px; }
 }
 </style>
 </head>
@@ -171,6 +259,7 @@ tr:hover td { background: var(--surface-hover); }
 <button class="login-theme" onclick="toggleTheme()" title="Сменить тему">🌙</button>
 <div class="login-card">
   <h1>🔐 Учёт сертификатов</h1>
+  <div class="login-sub">Войдите в систему</div>
   <div id="loginError" class="login-error hidden"></div>
   <label>Логин</label>
   <input type="text" id="loginUser" autocomplete="username">
@@ -186,57 +275,76 @@ tr:hover td { background: var(--surface-hover); }
 <div class="topbar">
   <h1>📋 Учёт сертификатов <span class="cloud-badge">☁️ Облако</span></h1>
   <div class="topbar-actions">
-    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
-    <button class="btn btn-secondary" onclick="refreshData()" title="Обновить из базы">🔄</button>
+    <button class="btn btn-ghost" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">🌙</button>
+    <button class="btn btn-ghost" onclick="refreshData()" title="Обновить из базы">🔄</button>
     <button class="btn btn-primary" onclick="openAddModal()">+ Добавить</button>
-    <button class="btn btn-secondary" onclick="exportJSON()">⬇ Экспорт</button>
-    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">⬆ Импорт</button>
+    <button class="btn btn-secondary" onclick="exportJSON()" title="Экспорт в JSON">⬇</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" title="Импорт из JSON">⬆</button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
-    <button class="btn btn-danger" onclick="logout()">Выйти</button>
+    <button class="btn btn-ghost" onclick="logout()" title="Выйти">🚪</button>
   </div>
 </div>
 
-<div class="container">
-  <div class="tabs" id="deptTabs"></div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h3>📊 По подразделениям</h3>
+    <div id="sidebarDepts"></div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-total">
+      <div class="sidebar-total-label">Всего по компании</div>
+      <div class="sidebar-total-row"><span>Сотрудников</span><strong id="globalTotal">0</strong></div>
+      <div class="sidebar-total-row"><span><span class="dot dot-expired"></span>Просрочено</span><strong id="globalExpired">0</strong></div>
+      <div class="sidebar-total-row"><span><span class="dot dot-soon"></span>Истекает</span><strong id="globalSoon">0</strong></div>
+      <div class="sidebar-total-row"><span><span class="dot dot-ok"></span>Действующих</span><strong id="globalOk">0</strong></div>
+      <div class="sidebar-total-row"><span><span class="dot dot-dekret"></span>Декрет</span><strong id="globalDekret">0</strong></div>
+    </div>
+  </aside>
 
-  <div class="stats">
-    <div class="stat stat-total"><div class="stat-label">Всего</div><div class="stat-value" id="statTotal">0</div></div>
-    <div class="stat stat-expired"><div class="stat-label">Просрочено</div><div class="stat-value" id="statExpired">0</div></div>
-    <div class="stat stat-soon"><div class="stat-label">Истекает (&lt;2 мес.)</div><div class="stat-value" id="statSoon">0</div></div>
-    <div class="stat stat-ok"><div class="stat-label">Действующих</div><div class="stat-value" id="statOk">0</div></div>
-    <div class="stat stat-dekret"><div class="stat-label">Декрет</div><div class="stat-value" id="statDekret">0</div></div>
-  </div>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tabs" id="deptTabs"></div>
 
-  <div class="controls">
-    <input type="text" id="searchInput" placeholder="🔍 Поиск по фамилии, имени, отчеству..." oninput="render()">
-    <select id="filterStatus" onchange="render()">
-      <option value="all">Все статусы</option>
-      <option value="expired">Просрочен</option>
-      <option value="soon">Меньше 2 месяцев</option>
-      <option value="ok">Больше 2 месяцев</option>
-      <option value="dekret">Декрет</option>
-    </select>
-    <select id="sortBy" onchange="render()">
-      <option value="lastname-asc">Фамилия А-Я</option>
-      <option value="lastname-desc">Фамилия Я-А</option>
-      <option value="date-asc">Срок: ближайшие</option>
-      <option value="date-desc">Срок: дальние</option>
-    </select>
-  </div>
+    <div class="stats">
+      <div class="stat stat-total"><div class="stat-label">Всего в отделе</div><div class="stat-value" id="statTotal">0</div></div>
+      <div class="stat stat-expired"><div class="stat-label">Просрочено</div><div class="stat-value" id="statExpired">0</div></div>
+      <div class="stat stat-soon"><div class="stat-label">Истекает (&lt;2 мес.)</div><div class="stat-value" id="statSoon">0</div></div>
+      <div class="stat stat-ok"><div class="stat-label">Действующих</div><div class="stat-value" id="statOk">0</div></div>
+      <div class="stat stat-dekret"><div class="stat-label">Декрет</div><div class="stat-value" id="statDekret">0</div></div>
+    </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead><tr id="tableHead"></tr></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="🔍 Поиск по ФИО или должности..." oninput="render()">
+      <select id="filterStatus" onchange="render()">
+        <option value="all">Все статусы</option>
+        <option value="expired">Просрочен</option>
+        <option value="soon">Меньше 2 месяцев</option>
+        <option value="ok">Больше 2 месяцев</option>
+        <option value="dekret">Декрет</option>
+      </select>
+      <select id="sortBy" onchange="render()">
+        <option value="lastname-asc">Фамилия А-Я</option>
+        <option value="lastname-desc">Фамилия Я-А</option>
+        <option value="date-asc">Срок: ближайшие</option>
+        <option value="date-desc">Срок: дальние</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="tableHead"></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 </div>
 
 <!-- MODAL: Add/Edit -->
 <div id="formModal" class="modal-overlay hidden">
-<div class="modal">
+<div class="modal modal-lg">
   <h2 id="formTitle">Добавить сотрудника</h2>
+  <div class="modal-sub" id="formSub"></div>
   <input type="hidden" id="formId">
   <label>Подразделение *</label>
   <select id="formDept" onchange="togglePurposeField()">
@@ -251,6 +359,8 @@ tr:hover td { background: var(--surface-hover); }
   <input type="text" id="formFirstname">
   <label>Отчество</label>
   <input type="text" id="formMiddlename">
+  <label>Должность</label>
+  <input type="text" id="formPosition" placeholder="например: Главный врач, Лаборант, Бухгалтер...">
   <div class="checkbox-row">
     <input type="checkbox" id="formTreasury">
     <label for="formTreasury">Оформлен в Казначействе</label>
@@ -270,6 +380,31 @@ tr:hover td { background: var(--surface-hover); }
     <input type="checkbox" id="formDekret">
     <label for="formDekret">Декрет (приоритет над сроком)</label>
   </div>
+
+  <!-- File uploads -->
+  <div class="file-section" id="fileSection">
+    <label style="margin-top:0">📎 Документы</label>
+    <div class="file-row">
+      <span class="file-icon">📄</span>
+      <span class="file-name" id="scanName"><span class="file-empty">Скан паспорта — не загружен</span></span>
+      <label class="file-upload-btn">
+        ⬆ Загрузить
+        <input type="file" accept="image/*,.pdf" onchange="uploadFile(event, 'scan')">
+      </label>
+      <button class="btn btn-ghost btn-sm hidden" id="scanDelBtn" onclick="deleteFile('scan')" title="Удалить">🗑</button>
+    </div>
+    <div class="file-row">
+      <span class="file-icon">📝</span>
+      <span class="file-name" id="applicationName"><span class="file-empty">Заявление — не загружено</span></span>
+      <label class="file-upload-btn">
+        ⬆ Загрузить
+        <input type="file" accept="image/*,.pdf" onchange="uploadFile(event, 'application')">
+      </label>
+      <button class="btn btn-ghost btn-sm hidden" id="applicationDelBtn" onclick="deleteFile('application')" title="Удалить">🗑</button>
+    </div>
+    <div style="font-size:11px;color:var(--text-faint);margin-top:6px">Сохраните карточку сначала, затем загружайте файлы. Поддержка: PDF, JPG, PNG.</div>
+  </div>
+
   <div class="modal-actions">
     <button class="btn btn-secondary" onclick="closeFormModal()">Отмена</button>
     <button class="btn btn-primary" id="formSaveBtn" onclick="saveForm()">Сохранить</button>
@@ -281,7 +416,7 @@ tr:hover td { background: var(--surface-hover); }
 <div id="renewModal" class="modal-overlay hidden">
 <div class="modal">
   <h2>Обновить сертификат</h2>
-  <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px" id="renewSubtitle"></p>
+  <p class="modal-sub" id="renewSubtitle"></p>
   <input type="hidden" id="renewId">
   <label>Текущая дата (станет «старой»)</label>
   <input type="text" id="renewOldDisplay" disabled>
@@ -294,11 +429,25 @@ tr:hover td { background: var(--surface-hover); }
 </div>
 </div>
 
+<!-- MODAL: Confirm Delete -->
+<div id="confirmModal" class="modal-overlay hidden">
+<div class="modal confirm-modal">
+  <div class="confirm-icon">⚠️</div>
+  <h2>Точно удалить?</h2>
+  <p class="modal-sub" id="confirmMessage">Это действие нельзя отменить.</p>
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeConfirmModal()">Отмена</button>
+    <button class="btn btn-danger" id="confirmBtn">Удалить</button>
+  </div>
+</div>
+</div>
+
 <script>
 // ==================== CONFIG ====================
 const SUPABASE_URL = "https://fpvusjatdwqzedhgljru.supabase.co";
 const SUPABASE_KEY = "sb_publishable_GnvmwL6B_MPvDdiqDRljmA_VrfsX7da";
 const TABLE = "certificates";
+const BUCKET = "cert-files";
 
 const AUTH_USER = "admin";
 const AUTH_PASS = "cert2026";
@@ -316,6 +465,7 @@ const DEPARTMENTS = [
 let data = [];
 let currentDept = "admin";
 let realtimeChannel = null;
+let confirmCallback = null;
 
 // ==================== THEME ====================
 function applyTheme(theme) {
@@ -343,6 +493,21 @@ else if (state === "syncing") { el.classList.add("conn-syncing"); el.textContent
 else { el.classList.add("conn-ok"); el.textContent = ""; }
 }
 
+// ==================== CONFIRM MODAL ====================
+function showConfirm(message, callback) {
+document.getElementById("confirmMessage").textContent = message;
+confirmCallback = callback;
+document.getElementById("confirmModal").classList.remove("hidden");
+}
+function closeConfirmModal() {
+document.getElementById("confirmModal").classList.add("hidden");
+confirmCallback = null;
+}
+document.getElementById("confirmBtn").addEventListener("click", () => {
+if (confirmCallback) confirmCallback();
+closeConfirmModal();
+});
+
 // ==================== SUPABASE API ====================
 async function sbFetch(path, options = {}) {
 const url = SUPABASE_URL + "/rest/v1/" + path;
@@ -362,23 +527,42 @@ if (res.status === 204) return null;
 return res.json();
 }
 
-async function sbList() {
-return await sbFetch(`${TABLE}?select=*&order=lastname.asc`);
-}
-async function sbInsert(row) {
-return await sbFetch(TABLE, { method: "POST", body: JSON.stringify(row) });
-}
-async function sbUpdate(id, row) {
-return await sbFetch(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(row) });
-}
-async function sbDelete(id) {
-return await sbFetch(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
-}
+async function sbList() { return await sbFetch(`${TABLE}?select=*&order=lastname.asc`); }
+async function sbInsert(row) { return await sbFetch(TABLE, { method: "POST", body: JSON.stringify(row) }); }
+async function sbUpdate(id, row) { return await sbFetch(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(row) }); }
+async function sbDelete(id) { return await sbFetch(`${TABLE}?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" }); }
 async function sbUpsertMany(rows) {
 return await sbFetch(TABLE, {
   method: "POST",
   headers: { "Prefer": "resolution=merge-duplicates,return=representation" },
   body: JSON.stringify(rows)
+});
+}
+
+// ==================== STORAGE API ====================
+async function storageUpload(path, file) {
+const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
+const res = await fetch(url, {
+  method: "POST",
+  headers: {
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY,
+    "x-upsert": "true",
+    "Content-Type": file.type || "application/octet-stream",
+  },
+  body: file,
+});
+if (!res.ok) {
+  const text = await res.text();
+  throw new Error(`Storage ${res.status}: ${text}`);
+}
+return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+}
+async function storageDelete(path) {
+const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
+await fetch(url, {
+  method: "DELETE",
+  headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
 });
 }
 
@@ -389,11 +573,16 @@ return {
   lastname: row.lastname || "",
   firstname: row.firstname || "",
   middlename: row.middlename || "",
+  position: row.position || "",
   treasury: !!row.treasury,
   purposes: Array.isArray(row.purposes) ? row.purposes : (row.purposes ? JSON.parse(row.purposes) : []),
   expiry: row.expiry || "",
   oldExpiry: row.old_expiry || "",
   dekret: !!row.dekret,
+  scanUrl: row.scan_url || "",
+  scanName: row.scan_name || "",
+  applicationUrl: row.application_url || "",
+  applicationName: row.application_name || "",
 };
 }
 function jsToDb(p) {
@@ -403,11 +592,16 @@ return {
   lastname: p.lastname || "",
   firstname: p.firstname || "",
   middlename: p.middlename || "",
+  position: p.position || "",
   treasury: !!p.treasury,
   purposes: p.purposes || [],
   expiry: p.expiry || null,
   old_expiry: p.oldExpiry || null,
   dekret: !!p.dekret,
+  scan_url: p.scanUrl || null,
+  scan_name: p.scanName || null,
+  application_url: p.applicationUrl || null,
+  application_name: p.applicationName || null,
 };
 }
 
@@ -419,7 +613,6 @@ try {
   const ws = new WebSocket(wsUrl);
   realtimeChannel = ws;
   let heartbeat;
-
   ws.onopen = () => {
     ws.send(JSON.stringify({
       topic: "realtime:public:" + TABLE,
@@ -433,7 +626,6 @@ try {
       }
     }, 25000);
   };
-
   ws.onmessage = (e) => {
     try {
       const msg = JSON.parse(e.data);
@@ -452,7 +644,6 @@ try {
       }
     } catch (err) {}
   };
-
   ws.onclose = () => {
     clearInterval(heartbeat);
     realtimeChannel = null;
@@ -491,7 +682,6 @@ async function showApp() {
 document.getElementById("loginScreen").classList.add("hidden");
 document.getElementById("appScreen").classList.remove("hidden");
 currentDept = localStorage.getItem(DEPT_KEY) || "admin";
-renderTabs();
 await refreshData();
 await migrateFromLocalStorage();
 startRealtime();
@@ -510,7 +700,7 @@ try {
   render();
 } catch (err) {
   console.error(err);
-  setBanner("error", "Нет связи с базой. Проверь интернет. " + err.message);
+  setBanner("error", "Нет связи с базой. " + err.message);
 }
 }
 
@@ -528,22 +718,18 @@ try {
     localStorage.setItem("cert_tracker_migrated_v1", "1");
     return;
   }
-  if (!confirm(`Найдено ${localData.length} локальных записей. Перенести их в облачную базу?`)) {
+  if (!confirm(`Найдено ${localData.length} локальных записей. Перенести в облачную базу?`)) {
     localStorage.setItem("cert_tracker_migrated_v1", "1");
     return;
   }
-  setBanner("syncing", "Перенос локальных данных в облако...");
+  setBanner("syncing", "Перенос локальных данных...");
   const rows = localData.map(p => jsToDb({
     id: p.id || genId(),
     dept: p.dept || "admin",
-    lastname: p.lastname || "",
-    firstname: p.firstname || "",
-    middlename: p.middlename || "",
-    treasury: !!p.treasury,
-    purposes: p.purposes || [],
-    expiry: p.expiry || "",
-    oldExpiry: p.oldExpiry || "",
-    dekret: !!p.dekret,
+    lastname: p.lastname || "", firstname: p.firstname || "", middlename: p.middlename || "",
+    position: p.position || "",
+    treasury: !!p.treasury, purposes: p.purposes || [],
+    expiry: p.expiry || "", oldExpiry: p.oldExpiry || "", dekret: !!p.dekret,
   }));
   await sbUpsertMany(rows);
   localStorage.setItem("cert_tracker_migrated_v1", "1");
@@ -557,7 +743,56 @@ try {
 
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
-// ==================== TABS ====================
+// ==================== STATUS ====================
+function computeStatus(person) {
+if (person.dekret) return { key: "dekret", label: "Декрет", cls: "status-dekret" };
+if (!person.expiry) return { key: "none", label: "—", cls: "" };
+const today = new Date(); today.setHours(0,0,0,0);
+const exp = new Date(person.expiry); exp.setHours(0,0,0,0);
+const diffDays = Math.floor((exp - today) / (1000*60*60*24));
+if (diffDays < 0) return { key: "expired", label: "Просрочен", cls: "status-expired" };
+if (diffDays <= 61) return { key: "soon", label: "<2 мес.", cls: "status-soon" };
+return { key: "ok", label: "Действует", cls: "status-ok" };
+}
+function formatDate(iso) {
+if (!iso) return "";
+const [y,m,d] = iso.split("-");
+return `${d}.${m}.${y}`;
+}
+function deptStats(deptId) {
+const arr = data.filter(p => (p.dept || "admin") === deptId);
+const stats = { total: arr.length, expired: 0, soon: 0, ok: 0, dekret: 0 };
+arr.forEach(p => { stats[computeStatus(p).key] = (stats[computeStatus(p).key] || 0) + 1; });
+return stats;
+}
+
+// ==================== RENDER ====================
+function renderSidebar() {
+const wrap = document.getElementById("sidebarDepts");
+let totalAll = 0, totalExpired = 0, totalSoon = 0, totalOk = 0, totalDekret = 0;
+wrap.innerHTML = DEPARTMENTS.map(d => {
+  const s = deptStats(d.id);
+  totalAll += s.total; totalExpired += s.expired; totalSoon += s.soon; totalOk += s.ok; totalDekret += s.dekret;
+  return `<div class="dept-stat ${currentDept === d.id ? "active" : ""}" onclick="switchDept('${d.id}')">
+    <div class="dept-stat-head">
+      <div class="dept-stat-name">${d.icon} ${d.label}</div>
+      <div class="dept-stat-total">${s.total}</div>
+    </div>
+    <div class="dept-stat-rows">
+      ${s.expired ? `<div class="dept-stat-row"><span><span class="dot dot-expired"></span>Просрочено</span><span>${s.expired}</span></div>` : ""}
+      ${s.soon ? `<div class="dept-stat-row"><span><span class="dot dot-soon"></span>Истекает</span><span>${s.soon}</span></div>` : ""}
+      ${s.ok ? `<div class="dept-stat-row"><span><span class="dot dot-ok"></span>Действующих</span><span>${s.ok}</span></div>` : ""}
+      ${s.dekret ? `<div class="dept-stat-row"><span><span class="dot dot-dekret"></span>Декрет</span><span>${s.dekret}</span></div>` : ""}
+      ${s.total === 0 ? `<div class="dept-stat-row" style="font-style:italic;font-size:11px">пусто</div>` : ""}
+    </div>
+  </div>`;
+}).join("");
+document.getElementById("globalTotal").textContent = totalAll;
+document.getElementById("globalExpired").textContent = totalExpired;
+document.getElementById("globalSoon").textContent = totalSoon;
+document.getElementById("globalOk").textContent = totalOk;
+document.getElementById("globalDekret").textContent = totalDekret;
+}
 function renderTabs() {
 const tabsEl = document.getElementById("deptTabs");
 tabsEl.innerHTML = DEPARTMENTS.map(d => {
@@ -570,38 +805,22 @@ tabsEl.innerHTML = DEPARTMENTS.map(d => {
 function switchDept(deptId) {
 currentDept = deptId;
 localStorage.setItem(DEPT_KEY, deptId);
-renderTabs();
 render();
 }
 
-// ==================== STATUS ====================
-function computeStatus(person) {
-if (person.dekret) return { key: "dekret", label: "Декрет", cls: "status-dekret" };
-if (!person.expiry) return { key: "none", label: "—", cls: "" };
-const today = new Date(); today.setHours(0,0,0,0);
-const exp = new Date(person.expiry); exp.setHours(0,0,0,0);
-const diffDays = Math.floor((exp - today) / (1000*60*60*24));
-if (diffDays < 0) return { key: "expired", label: "Просрочен", cls: "status-expired" };
-if (diffDays <= 61) return { key: "soon", label: "Меньше 2 месяцев", cls: "status-soon" };
-return { key: "ok", label: "Больше 2 месяцев", cls: "status-ok" };
-}
-function formatDate(iso) {
-if (!iso) return "";
-const [y,m,d] = iso.split("-");
-return `${d}.${m}.${y}`;
-}
-
-// ==================== RENDER ====================
 function renderTableHead() {
 const head = document.getElementById("tableHead");
-const cols = ["<th>№</th>","<th>Фамилия</th>","<th>Имя</th>","<th>Отчество</th>","<th>Казн.</th>"];
-if (currentDept === "admin") cols.push("<th>Цель использования</th>");
-cols.push("<th>Срок действия</th>","<th>Срок старого</th>","<th>Статус</th>","<th>Действия</th>");
+const cols = ["<th>№</th>","<th>Фамилия</th>","<th>Имя</th>","<th>Отчество</th>","<th>Должность</th>","<th>Казн.</th>"];
+if (currentDept === "admin") cols.push("<th>Цель</th>");
+cols.push("<th>📎</th>","<th>Срок</th>","<th>Старый срок</th>","<th>Статус</th>","<th>Действия</th>");
 head.innerHTML = cols.join("");
 }
 
 function render() {
+renderSidebar();
+renderTabs();
 renderTableHead();
+
 const search = document.getElementById("searchInput").value.toLowerCase().trim();
 const filter = document.getElementById("filterStatus").value;
 const sort = document.getElementById("sortBy").value;
@@ -614,7 +833,8 @@ if (search) {
   list = list.filter(p =>
     (p.lastname||"").toLowerCase().includes(search) ||
     (p.firstname||"").toLowerCase().includes(search) ||
-    (p.middlename||"").toLowerCase().includes(search)
+    (p.middlename||"").toLowerCase().includes(search) ||
+    (p.position||"").toLowerCase().includes(search)
   );
 }
 if (filter !== "all") list = list.filter(p => p._status.key === filter);
@@ -629,27 +849,34 @@ list.sort((a,b) => {
 
 const deptTotal = data.filter(p => (p.dept || "admin") === currentDept).length;
 const tbody = document.getElementById("tableBody");
-const colCount = currentDept === "admin" ? 10 : 9;
+const colCount = currentDept === "admin" ? 12 : 11;
 
 if (list.length === 0) {
-  tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty">${deptTotal === 0 ? "В этом подразделении ещё нет записей. Нажмите «Добавить»." : "Ничего не найдено"}</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty">
+    <div class="empty-icon">${deptTotal === 0 ? "📭" : "🔍"}</div>
+    ${deptTotal === 0 ? "В этом подразделении ещё нет записей. Нажмите «+ Добавить»." : "Ничего не найдено"}
+  </td></tr>`;
 } else {
   tbody.innerHTML = list.map((p,i) => {
     const purposeCell = currentDept === "admin"
       ? `<td>${(p.purposes||[]).map(pp => `<span class="purpose-tag">${escapeHtml(pp)}</span>`).join("") || ""}</td>`
       : "";
+    const filesCount = (p.scanUrl ? 1 : 0) + (p.applicationUrl ? 1 : 0);
+    const filesCell = filesCount > 0 ? `<td style="text-align:center" title="${filesCount} файл(а)">📎 ${filesCount}</td>` : `<td></td>`;
     return `
-    <tr>
+    <tr onclick="if(!event.target.closest('button')) openEditModal('${p.id}')">
       <td>${i+1}</td>
       <td><strong>${escapeHtml(p.lastname||"")}</strong></td>
       <td>${escapeHtml(p.firstname||"")}</td>
       <td>${escapeHtml(p.middlename||"")}</td>
+      <td style="color:var(--text-muted);font-size:12px">${escapeHtml(p.position||"")}</td>
       <td style="text-align:center">${p.treasury ? "✓" : ""}</td>
       ${purposeCell}
+      ${filesCell}
       <td>${formatDate(p.expiry)}</td>
       <td style="color:var(--text-faint)">${formatDate(p.oldExpiry)}</td>
       <td><span class="status-cell ${p._status.cls}">${p._status.label}</span></td>
-      <td class="actions-cell">
+      <td class="actions-cell" onclick="event.stopPropagation()">
         <button class="btn btn-success btn-sm" onclick="openRenewModal('${p.id}')" title="Обновить сертификат">🔄</button>
         <button class="btn btn-secondary btn-sm" onclick="openEditModal('${p.id}')" title="Редактировать">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="deleteRow('${p.id}')" title="Удалить">🗑</button>
@@ -665,8 +892,6 @@ document.getElementById("statExpired").textContent = all.filter(s => s.key === "
 document.getElementById("statSoon").textContent = all.filter(s => s.key === "soon").length;
 document.getElementById("statOk").textContent = all.filter(s => s.key === "ok").length;
 document.getElementById("statDekret").textContent = all.filter(s => s.key === "dekret").length;
-
-renderTabs();
 }
 function escapeHtml(s) {
 return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
@@ -677,35 +902,61 @@ function togglePurposeField() {
 const dept = document.getElementById("formDept").value;
 document.getElementById("purposeWrap").style.display = dept === "admin" ? "block" : "none";
 }
+function renderFileRow(kind, p) {
+const nameEl = document.getElementById(kind + "Name");
+const delBtn = document.getElementById(kind + "DelBtn");
+const url = kind === "scan" ? p?.scanUrl : p?.applicationUrl;
+const name = kind === "scan" ? p?.scanName : p?.applicationName;
+const labelEmpty = kind === "scan" ? "Скан паспорта — не загружен" : "Заявление — не загружено";
+if (url) {
+  nameEl.innerHTML = `<a href="${url}" target="_blank" rel="noopener">${escapeHtml(name || "Открыть файл")}</a>`;
+  delBtn.classList.remove("hidden");
+} else {
+  nameEl.innerHTML = `<span class="file-empty">${labelEmpty}</span>`;
+  delBtn.classList.add("hidden");
+}
+}
 function openAddModal() {
 document.getElementById("formTitle").textContent = "Добавить сотрудника";
+document.getElementById("formSub").textContent = "Заполните данные, файлы можно загрузить после сохранения";
 document.getElementById("formId").value = "";
 document.getElementById("formDept").value = currentDept;
 document.getElementById("formLastname").value = "";
 document.getElementById("formFirstname").value = "";
 document.getElementById("formMiddlename").value = "";
+document.getElementById("formPosition").value = "";
 document.getElementById("formTreasury").checked = false;
 document.getElementById("formExpiry").value = "";
 document.getElementById("formDekret").checked = false;
 document.querySelectorAll(".purpose-cb").forEach(cb => cb.checked = false);
+renderFileRow("scan", null);
+renderFileRow("application", null);
+document.getElementById("fileSection").style.opacity = "0.5";
+document.getElementById("fileSection").style.pointerEvents = "none";
 togglePurposeField();
 document.getElementById("formModal").classList.remove("hidden");
 }
 function openEditModal(id) {
 const p = data.find(x => x.id === id);
 if (!p) return;
-document.getElementById("formTitle").textContent = "Редактировать сотрудника";
+document.getElementById("formTitle").textContent = "Карточка сотрудника";
+document.getElementById("formSub").textContent = `${p.lastname} ${p.firstname} ${p.middlename||""}`.trim();
 document.getElementById("formId").value = p.id;
 document.getElementById("formDept").value = p.dept || "admin";
 document.getElementById("formLastname").value = p.lastname || "";
 document.getElementById("formFirstname").value = p.firstname || "";
 document.getElementById("formMiddlename").value = p.middlename || "";
+document.getElementById("formPosition").value = p.position || "";
 document.getElementById("formTreasury").checked = !!p.treasury;
 document.getElementById("formExpiry").value = p.expiry || "";
 document.getElementById("formDekret").checked = !!p.dekret;
 document.querySelectorAll(".purpose-cb").forEach(cb => {
   cb.checked = (p.purposes || []).includes(cb.value);
 });
+renderFileRow("scan", p);
+renderFileRow("application", p);
+document.getElementById("fileSection").style.opacity = "1";
+document.getElementById("fileSection").style.pointerEvents = "auto";
 togglePurposeField();
 document.getElementById("formModal").classList.remove("hidden");
 }
@@ -722,14 +973,13 @@ const payload = {
   lastname: document.getElementById("formLastname").value.trim(),
   firstname: document.getElementById("formFirstname").value.trim(),
   middlename: document.getElementById("formMiddlename").value.trim(),
+  position: document.getElementById("formPosition").value.trim(),
   treasury: document.getElementById("formTreasury").checked,
   expiry: document.getElementById("formExpiry").value,
   dekret: document.getElementById("formDekret").checked,
   purposes,
 };
-if (!payload.lastname || !payload.firstname) {
-  alert("Заполните фамилию и имя"); return;
-}
+if (!payload.lastname || !payload.firstname) { alert("Заполните фамилию и имя"); return; }
 
 const btn = document.getElementById("formSaveBtn");
 btn.disabled = true;
@@ -744,13 +994,29 @@ try {
     const idx = data.findIndex(x => x.id === id);
     if (idx !== -1) data[idx] = merged;
   } else {
-    const newRow = { id: genId(), oldExpiry: "", ...payload };
+    const newRow = { id: genId(), oldExpiry: "", scanUrl: "", scanName: "", applicationUrl: "", applicationName: "", ...payload };
     await sbInsert(jsToDb(newRow));
     data.push(newRow);
+    // Switch to edit mode so user can upload files
+    document.getElementById("formId").value = newRow.id;
+    document.getElementById("formTitle").textContent = "Карточка сотрудника";
+    document.getElementById("formSub").textContent = `${newRow.lastname} ${newRow.firstname} ${newRow.middlename||""}`.trim();
+    document.getElementById("fileSection").style.opacity = "1";
+    document.getElementById("fileSection").style.pointerEvents = "auto";
+    renderFileRow("scan", newRow);
+    renderFileRow("application", newRow);
   }
-  closeFormModal();
-  if (dept !== currentDept) switchDept(dept);
-  else render();
+  if (dept !== currentDept && !id) {
+    switchDept(dept);
+    closeFormModal();
+  } else {
+    render();
+    if (!id) {
+      // keep modal open for file upload after create
+    } else {
+      closeFormModal();
+    }
+  }
 } catch (err) {
   alert("Не удалось сохранить: " + err.message);
 } finally {
@@ -759,19 +1025,100 @@ try {
 }
 }
 
-async function deleteRow(id) {
-const p = data.find(x => x.id === id);
-if (!p) return;
-if (!confirm(`Удалить запись: ${p.lastname} ${p.firstname}?`)) return;
+// ==================== FILE UPLOAD ====================
+async function uploadFile(event, kind) {
+const file = event.target.files[0];
+if (!file) return;
+const id = document.getElementById("formId").value;
+if (!id) { alert("Сначала сохраните карточку"); event.target.value = ""; return; }
+if (file.size > 10 * 1024 * 1024) { alert("Файл больше 10 МБ"); event.target.value = ""; return; }
+
+const nameEl = document.getElementById(kind + "Name");
+nameEl.innerHTML = '<span class="loader" style="border-color:rgba(0,0,0,0.2);border-top-color:var(--primary)"></span> Загрузка...';
+
 try {
-  await sbDelete(id);
-  data = data.filter(x => x.id !== id);
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+  const path = `${id}/${kind}-${Date.now()}.${ext}`;
+  const url = await storageUpload(path, file);
+  // Delete old file if existed
+  const existing = data.find(x => x.id === id);
+  const oldUrl = kind === "scan" ? existing?.scanUrl : existing?.applicationUrl;
+  if (oldUrl) {
+    const oldPath = oldUrl.split(`/public/${BUCKET}/`)[1];
+    if (oldPath) await storageDelete(oldPath).catch(()=>{});
+  }
+  // Update record
+  const patch = kind === "scan"
+    ? { scan_url: url, scan_name: file.name }
+    : { application_url: url, application_name: file.name };
+  await sbUpdate(id, patch);
+  const idx = data.findIndex(x => x.id === id);
+  if (idx !== -1) {
+    if (kind === "scan") { data[idx].scanUrl = url; data[idx].scanName = file.name; }
+    else { data[idx].applicationUrl = url; data[idx].applicationName = file.name; }
+  }
+  renderFileRow(kind, data[idx]);
   render();
 } catch (err) {
-  alert("Не удалось удалить: " + err.message);
+  alert("Ошибка загрузки: " + err.message);
+  renderFileRow(kind, data.find(x => x.id === id));
+} finally {
+  event.target.value = "";
 }
 }
 
+async function deleteFile(kind) {
+const id = document.getElementById("formId").value;
+if (!id) return;
+const existing = data.find(x => x.id === id);
+if (!existing) return;
+const url = kind === "scan" ? existing.scanUrl : existing.applicationUrl;
+if (!url) return;
+showConfirm(`Удалить файл "${kind === "scan" ? "Скан паспорта" : "Заявление"}"?`, async () => {
+  try {
+    const oldPath = url.split(`/public/${BUCKET}/`)[1];
+    if (oldPath) await storageDelete(oldPath).catch(()=>{});
+    const patch = kind === "scan"
+      ? { scan_url: null, scan_name: null }
+      : { application_url: null, application_name: null };
+    await sbUpdate(id, patch);
+    const idx = data.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      if (kind === "scan") { data[idx].scanUrl = ""; data[idx].scanName = ""; }
+      else { data[idx].applicationUrl = ""; data[idx].applicationName = ""; }
+    }
+    renderFileRow(kind, data[idx]);
+    render();
+  } catch (err) {
+    alert("Не удалось удалить файл: " + err.message);
+  }
+});
+}
+
+// ==================== DELETE ROW ====================
+function deleteRow(id) {
+const p = data.find(x => x.id === id);
+if (!p) return;
+const fio = `${p.lastname} ${p.firstname} ${p.middlename||""}`.trim();
+showConfirm(`Удалить запись «${fio}»? Все прикреплённые файлы тоже будут удалены.`, async () => {
+  try {
+    // Delete files first
+    for (const url of [p.scanUrl, p.applicationUrl]) {
+      if (url) {
+        const oldPath = url.split(`/public/${BUCKET}/`)[1];
+        if (oldPath) await storageDelete(oldPath).catch(()=>{});
+      }
+    }
+    await sbDelete(id);
+    data = data.filter(x => x.id !== id);
+    render();
+  } catch (err) {
+    alert("Не удалось удалить: " + err.message);
+  }
+});
+}
+
+// ==================== RENEW ====================
 function openRenewModal(id) {
 const p = data.find(x => x.id === id);
 if (!p) return;
@@ -827,19 +1174,17 @@ reader.onload = async e => {
   try {
     const imported = JSON.parse(e.target.result);
     if (!Array.isArray(imported)) throw new Error("Файл должен содержать массив");
-    if (!confirm(`Импортировать ${imported.length} записей в облачную базу? Существующие записи с такими же ID будут обновлены.`)) return;
+    if (!confirm(`Импортировать ${imported.length} записей? Существующие с такими же ID будут обновлены.`)) return;
     setBanner("syncing", "Импорт в облако...");
     const rows = imported.map(p => jsToDb({
       id: p.id || genId(),
       dept: p.dept || "admin",
-      lastname: p.lastname || "",
-      firstname: p.firstname || "",
-      middlename: p.middlename || "",
-      treasury: !!p.treasury,
-      purposes: p.purposes || [],
-      expiry: p.expiry || "",
-      oldExpiry: p.oldExpiry || "",
-      dekret: !!p.dekret,
+      lastname: p.lastname || "", firstname: p.firstname || "", middlename: p.middlename || "",
+      position: p.position || "",
+      treasury: !!p.treasury, purposes: p.purposes || [],
+      expiry: p.expiry || "", oldExpiry: p.oldExpiry || "", dekret: !!p.dekret,
+      scanUrl: p.scanUrl || "", scanName: p.scanName || "",
+      applicationUrl: p.applicationUrl || "", applicationName: p.applicationName || "",
     }));
     await sbUpsertMany(rows);
     await refreshData();
