@@ -1,0 +1,86 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+- name: rest
+  url: http://postgrest:3000/
+  routes:
+    - name: rest-route
+      paths:
+        - /rest/v1/
+      strip_path: true
+  plugins:
+    - name: cors
+      config:
+        origins:
+          - "*"
+        methods:
+          - GET
+          - POST
+          - PATCH
+          - DELETE
+          - OPTIONS
+          - PUT
+          - HEAD
+        headers:
+          - Accept
+          - Authorization
+          - Content-Type
+          - apikey
+          - Prefer
+          - x-client-info
+          - x-upsert
+          - Range
+        exposed_headers:
+          - Content-Range
+          - Content-Length
+        credentials: true
+        max_age: 3600
+
+- name: storage
+  url: http://storage:5000/
+  routes:
+    - name: storage-route
+      paths:
+        - /storage/v1/
+      strip_path: true
+  plugins:
+    - name: cors
+      config:
+        origins:
+          - "*"
+        methods:
+          - GET
+          - POST
+          - PATCH
+          - DELETE
+          - OPTIONS
+          - PUT
+          - HEAD
+        headers:
+          - Accept
+          - Authorization
+          - Content-Type
+          - apikey
+          - x-upsert
+          - x-client-info
+          - Range
+        exposed_headers:
+          - Content-Range
+          - Content-Length
+        credentials: true
+        max_age: 3600
+
+- name: realtime
+  url: http://realtime:4000/
+  routes:
+    - name: realtime-route
+      paths:
+        - /realtime/v1/
+      strip_path: true
+  plugins:
+    - name: cors
+      config:
+        origins:
+          - "*"
+        credentials: true
