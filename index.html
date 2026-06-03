@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Учёт сертификатов</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; color: #1a1a1a; min-height: 100vh; }
+.hidden { display: none !important; }
+
+/* Login */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 40px; width: 100%; max-width: 380px; }
+.login-card h1 { font-size: 22px; margin-bottom: 24px; text-align: center; color: #1a1a1a; }
+.login-card label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #555; }
+.login-card input { width: 100%; padding: 10px 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
+.login-card input:focus { outline: none; border-color: #4a90e2; }
+.login-card button { width: 100%; padding: 11px; background: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.login-card button:hover { background: #357ac9; }
+.login-error { color: #d93025; font-size: 13px; margin-bottom: 12px; text-align: center; }
+
+/* App */
+.topbar { background: white; border-bottom: 1px solid #e4e7eb; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.topbar h1 { font-size: 18px; }
+.topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat { background: white; border-radius: 10px; padding: 16px; border-left: 4px solid #ccc; }
+.stat-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-value { font-size: 26px; font-weight: 700; margin-top: 4px; }
+.stat-total { border-left-color: #4a90e2; }
+.stat-expired { border-left-color: #E06666; }
+.stat-soon { border-left-color: #F6B26B; }
+.stat-ok { border-left-color: #93C47D; }
+.stat-dekret { border-left-color: #7BD3F7; }
+
+/* Controls */
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+.controls input, .controls select { padding: 8px 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 14px; background: white; }
+.controls input { flex: 1; min-width: 200px; }
+
+/* Buttons */
+.btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.btn-primary { background: #4a90e2; color: white; }
+.btn-primary:hover { background: #357ac9; }
+.btn-secondary { background: #e4e7eb; color: #333; }
+.btn-secondary:hover { background: #d4d8dc; }
+.btn-success { background: #93C47D; color: white; }
+.btn-success:hover { background: #7aae64; }
+.btn-danger { background: #E06666; color: white; }
+.btn-danger:hover { background: #c54f4f; }
+.btn-sm { padding: 4px 8px; font-size: 12px; }
+
+/* Table */
+.table-wrap { background: white; border-radius: 10px; overflow: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.05); max-height: 70vh; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead { position: sticky; top: 0; background: #f0f3f7; z-index: 10; }
+th { padding: 10px 8px; text-align: left; font-weight: 600; color: #444; border-bottom: 2px solid #e4e7eb; white-space: nowrap; font-size: 12px; }
+td { padding: 8px; border-bottom: 1px solid #f0f3f7; vertical-align: middle; }
+tr:hover td { background: #fafbfc; }
+.status-cell { font-weight: 600; text-align: center; padding: 6px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; }
+.status-expired { background: #E06666; color: white; }
+.status-soon { background: #F6B26B; color: white; }
+.status-ok { background: #93C47D; color: white; }
+.status-dekret { background: #7BD3F7; color: #003a5c; }
+.actions-cell { display: flex; gap: 4px; white-space: nowrap; }
+.empty { padding: 40px; text-align: center; color: #999; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+.modal { background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow: auto; }
+.modal h2 { font-size: 18px; margin-bottom: 16px; }
+.modal label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #555; margin-top: 12px; }
+.modal input[type="text"], .modal input[type="date"], .modal select { width: 100%; padding: 8px 12px; border: 1px solid #d0d5dd; border-radius: 8px; font-size: 14px; }
+.modal .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.modal .checkbox-row label { margin: 0; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+@media (max-width: 640px) {
+  .topbar { padding: 10px 12px; }
+  .container { padding: 12px; }
+  th, td { padding: 6px 4px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-wrap">
+<div class="login-card">
+  <h1>🔐 Учёт сертификатов</h1>
+  <div id="loginError" class="login-error hidden"></div>
+  <label>Логин</label>
+  <input type="text" id="loginUser" autocomplete="username">
+  <label>Пароль</label>
+  <input type="password" id="loginPass" autocomplete="current-password">
+  <button onclick="login()">Войти</button>
+</div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" class="hidden">
+<div class="topbar">
+  <h1>📋 Учёт сертификатов сотрудников</h1>
+  <div class="topbar-actions">
+    <button class="btn btn-primary" onclick="openAddModal()">+ Добавить</button>
+    <button class="btn btn-secondary" onclick="exportJSON()">⬇ Экспорт</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">⬆ Импорт</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+    <button class="btn btn-danger" onclick="logout()">Выйти</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat stat-total"><div class="stat-label">Всего</div><div class="stat-value" id="statTotal">0</div></div>
+    <div class="stat stat-expired"><div class="stat-label">Просрочено</div><div class="stat-value" id="statExpired">0</div></div>
+    <div class="stat stat-soon"><div class="stat-label">Истекает (&lt;2 мес.)</div><div class="stat-value" id="statSoon">0</div></div>
+    <div class="stat stat-ok"><div class="stat-label">Действующих</div><div class="stat-value" id="statOk">0</div></div>
+    <div class="stat stat-dekret"><div class="stat-label">Декрет</div><div class="stat-value" id="statDekret">0</div></div>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="🔍 Поиск по фамилии, имени, отчеству..." oninput="render()">
+    <select id="filterStatus" onchange="render()">
+      <option value="all">Все статусы</option>
+      <option value="expired">Просрочен</option>
+      <option value="soon">Меньше 2 месяцев</option>
+      <option value="ok">Больше 2 месяцев</option>
+      <option value="dekret">Декрет</option>
+    </select>
+    <select id="sortBy" onchange="render()">
+      <option value="lastname-asc">Фамилия А-Я</option>
+      <option value="lastname-desc">Фамилия Я-А</option>
+      <option value="date-asc">Срок: ближайшие</option>
+      <option value="date-desc">Срок: дальние</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>№</th>
+          <th>Фамилия</th>
+          <th>Имя</th>
+          <th>Отчество</th>
+          <th>Казн.</th>
+          <th>Срок действия</th>
+          <th>Срок старого</th>
+          <th>Статус</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- MODAL: Add/Edit -->
+<div id="formModal" class="modal-overlay hidden">
+<div class="modal">
+  <h2 id="formTitle">Добавить сотрудника</h2>
+  <input type="hidden" id="formId">
+  <label>Фамилия *</label>
+  <input type="text" id="formLastname">
+  <label>Имя *</label>
+  <input type="text" id="formFirstname">
+  <label>Отчество</label>
+  <input type="text" id="formMiddlename">
+  <div class="checkbox-row">
+    <input type="checkbox" id="formTreasury">
+    <label for="formTreasury">Оформлен в Казначействе</label>
+  </div>
+  <label>Срок действия сертификата</label>
+  <input type="date" id="formExpiry">
+  <div class="checkbox-row">
+    <input type="checkbox" id="formDekret">
+    <label for="formDekret">Декрет (приоритет над сроком)</label>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeFormModal()">Отмена</button>
+    <button class="btn btn-primary" onclick="saveForm()">Сохранить</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL: Renew -->
+<div id="renewModal" class="modal-overlay hidden">
+<div class="modal">
+  <h2>Обновить сертификат</h2>
+  <p style="font-size:13px;color:#666;margin-bottom:8px" id="renewSubtitle"></p>
+  <input type="hidden" id="renewId">
+  <label>Текущая дата (станет «старой»)</label>
+  <input type="text" id="renewOldDisplay" disabled>
+  <label>Новая дата окончания сертификата *</label>
+  <input type="date" id="renewNewDate">
+  <div class="modal-actions">
+    <button class="btn btn-secondary" onclick="closeRenewModal()">Отмена</button>
+    <button class="btn btn-success" onclick="saveRenew()">Обновить</button>
+  </div>
+</div>
+</div>
+
+<script>
+const AUTH_USER = "admin";
+const AUTH_PASS = "cert2026";
+const STORAGE_KEY = "cert_tracker_data_v1";
+const AUTH_KEY = "cert_tracker_auth_v1";
+
+let data = [];
+
+// ===== AUTH =====
+function login() {
+const u = document.getElementById("loginUser").value.trim();
+const p = document.getElementById("loginPass").value;
+const err = document.getElementById("loginError");
+if (u === AUTH_USER && p === AUTH_PASS) {
+  localStorage.setItem(AUTH_KEY, "1");
+  err.classList.add("hidden");
+  showApp();
+} else {
+  err.textContent = "Неверный логин или пароль";
+  err.classList.remove("hidden");
+}
+}
+function logout() {
+localStorage.removeItem(AUTH_KEY);
+document.getElementById("appScreen").classList.add("hidden");
+document.getElementById("loginScreen").classList.remove("hidden");
+document.getElementById("loginUser").value = "";
+document.getElementById("loginPass").value = "";
+}
+function showApp() {
+document.getElementById("loginScreen").classList.add("hidden");
+document.getElementById("appScreen").classList.remove("hidden");
+loadData();
+render();
+}
+
+document.getElementById("loginPass").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
+document.getElementById("loginUser").addEventListener("keypress", e => { if (e.key === "Enter") document.getElementById("loginPass").focus(); });
+
+// ===== DATA =====
+function loadData() {
+const raw = localStorage.getItem(STORAGE_KEY);
+data = raw ? JSON.parse(raw) : [];
+}
+function saveData() {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+// ===== STATUS LOGIC =====
+function computeStatus(person) {
+if (person.dekret) return { key: "dekret", label: "Декрет", cls: "status-dekret" };
+if (!person.expiry) return { key: "none", label: "—", cls: "" };
+const today = new Date(); today.setHours(0,0,0,0);
+const exp = new Date(person.expiry); exp.setHours(0,0,0,0);
+const diffDays = Math.floor((exp - today) / (1000*60*60*24));
+if (diffDays < 0) return { key: "expired", label: "Просрочен", cls: "status-expired" };
+if (diffDays <= 61) return { key: "soon", label: "Меньше 2 месяцев", cls: "status-soon" };
+return { key: "ok", label: "Больше 2 месяцев", cls: "status-ok" };
+}
+
+function formatDate(iso) {
+if (!iso) return "";
+const [y,m,d] = iso.split("-");
+return `${d}.${m}.${y}`;
+}
+
+// ===== RENDER =====
+function render() {
+const search = document.getElementById("searchInput").value.toLowerCase().trim();
+const filter = document.getElementById("filterStatus").value;
+const sort = document.getElementById("sortBy").value;
+
+let list = data.map(p => ({ ...p, _status: computeStatus(p) }));
+
+if (search) {
+  list = list.filter(p =>
+    (p.lastname||"").toLowerCase().includes(search) ||
+    (p.firstname||"").toLowerCase().includes(search) ||
+    (p.middlename||"").toLowerCase().includes(search)
+  );
+}
+if (filter !== "all") list = list.filter(p => p._status.key === filter);
+
+list.sort((a,b) => {
+  if (sort === "lastname-asc") return (a.lastname||"").localeCompare(b.lastname||"", "ru");
+  if (sort === "lastname-desc") return (b.lastname||"").localeCompare(a.lastname||"", "ru");
+  if (sort === "date-asc") return (a.expiry||"9999") < (b.expiry||"9999") ? -1 : 1;
+  if (sort === "date-desc") return (a.expiry||"0") > (b.expiry||"0") ? -1 : 1;
+  return 0;
+});
+
+const tbody = document.getElementById("tableBody");
+if (list.length === 0) {
+  tbody.innerHTML = `<tr><td colspan="9" class="empty">${data.length === 0 ? "Нажмите «Добавить» чтобы внести первого сотрудника" : "Ничего не найдено"}</td></tr>`;
+} else {
+  tbody.innerHTML = list.map((p,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${escapeHtml(p.lastname||"")}</strong></td>
+      <td>${escapeHtml(p.firstname||"")}</td>
+      <td>${escapeHtml(p.middlename||"")}</td>
+      <td style="text-align:center">${p.treasury ? "✓" : ""}</td>
+      <td>${formatDate(p.expiry)}</td>
+      <td style="color:#888">${formatDate(p.oldExpiry)}</td>
+      <td><span class="status-cell ${p._status.cls}">${p._status.label}</span></td>
+      <td class="actions-cell">
+        <button class="btn btn-success btn-sm" onclick="openRenewModal('${p.id}')" title="Обновить сертификат">🔄</button>
+        <button class="btn btn-secondary btn-sm" onclick="openEditModal('${p.id}')" title="Редактировать">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRow('${p.id}')" title="Удалить">🗑</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+const all = data.map(p => computeStatus(p));
+document.getElementById("statTotal").textContent = data.length;
+document.getElementById("statExpired").textContent = all.filter(s => s.key === "expired").length;
+document.getElementById("statSoon").textContent = all.filter(s => s.key === "soon").length;
+document.getElementById("statOk").textContent = all.filter(s => s.key === "ok").length;
+document.getElementById("statDekret").textContent = all.filter(s => s.key === "dekret").length;
+}
+
+function escapeHtml(s) {
+return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+}
+
+// ===== MODALS =====
+function openAddModal() {
+document.getElementById("formTitle").textContent = "Добавить сотрудника";
+document.getElementById("formId").value = "";
+document.getElementById("formLastname").value = "";
+document.getElementById("formFirstname").value = "";
+document.getElementById("formMiddlename").value = "";
+document.getElementById("formTreasury").checked = false;
+document.getElementById("formExpiry").value = "";
+document.getElementById("formDekret").checked = false;
+document.getElementById("formModal").classList.remove("hidden");
+}
+function openEditModal(id) {
+const p = data.find(x => x.id === id);
+if (!p) return;
+document.getElementById("formTitle").textContent = "Редактировать сотрудника";
+document.getElementById("formId").value = p.id;
+document.getElementById("formLastname").value = p.lastname || "";
+document.getElementById("formFirstname").value = p.firstname || "";
+document.getElementById("formMiddlename").value = p.middlename || "";
+document.getElementById("formTreasury").checked = !!p.treasury;
+document.getElementById("formExpiry").value = p.expiry || "";
+document.getElementById("formDekret").checked = !!p.dekret;
+document.getElementById("formModal").classList.remove("hidden");
+}
+function closeFormModal() { document.getElementById("formModal").classList.add("hidden"); }
+
+function saveForm() {
+const id = document.getElementById("formId").value;
+const payload = {
+  lastname: document.getElementById("formLastname").value.trim(),
+  firstname: document.getElementById("formFirstname").value.trim(),
+  middlename: document.getElementById("formMiddlename").value.trim(),
+  treasury: document.getElementById("formTreasury").checked,
+  expiry: document.getElementById("formExpiry").value,
+  dekret: document.getElementById("formDekret").checked,
+};
+if (!payload.lastname || !payload.firstname) {
+  alert("Заполните фамилию и имя");
+  return;
+}
+if (id) {
+  const idx = data.findIndex(x => x.id === id);
+  if (idx !== -1) data[idx] = { ...data[idx], ...payload };
+} else {
+  data.push({ id: genId(), oldExpiry: "", ...payload });
+}
+saveData();
+closeFormModal();
+render();
+}
+
+function deleteRow(id) {
+const p = data.find(x => x.id === id);
+if (!p) return;
+if (!confirm(`Удалить запись: ${p.lastname} ${p.firstname}?`)) return;
+data = data.filter(x => x.id !== id);
+saveData();
+render();
+}
+
+function openRenewModal(id) {
+const p = data.find(x => x.id === id);
+if (!p) return;
+document.getElementById("renewId").value = id;
+document.getElementById("renewSubtitle").textContent = `${p.lastname} ${p.firstname} ${p.middlename||""}`.trim();
+document.getElementById("renewOldDisplay").value = formatDate(p.expiry) || "(не указана)";
+document.getElementById("renewNewDate").value = "";
+document.getElementById("renewModal").classList.remove("hidden");
+}
+function closeRenewModal() { document.getElementById("renewModal").classList.add("hidden"); }
+
+function saveRenew() {
+const id = document.getElementById("renewId").value;
+const newDate = document.getElementById("renewNewDate").value;
+if (!newDate) { alert("Укажите новую дату"); return; }
+const idx = data.findIndex(x => x.id === id);
+if (idx === -1) return;
+data[idx].oldExpiry = data[idx].expiry || "";
+data[idx].expiry = newDate;
+saveData();
+closeRenewModal();
+render();
+}
+
+// ===== EXPORT / IMPORT =====
+function exportJSON() {
+const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+a.href = url;
+a.download = `certificates_${new Date().toISOString().slice(0,10)}.json`;
+a.click();
+URL.revokeObjectURL(url);
+}
+function importJSON(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = e => {
+  try {
+    const imported = JSON.parse(e.target.result);
+    if (!Array.isArray(imported)) throw new Error("Файл должен содержать массив");
+    if (!confirm(`Импортировать ${imported.length} записей? Текущие данные будут заменены.`)) return;
+    data = imported.map(p => ({ id: p.id || genId(), oldExpiry: "", ...p }));
+    saveData();
+    render();
+    alert(`Импортировано: ${data.length} записей`);
+  } catch (err) {
+    alert("Ошибка чтения файла: " + err.message);
+  }
+};
+reader.readAsText(file);
+event.target.value = "";
+}
+
+// ===== INIT =====
+if (localStorage.getItem(AUTH_KEY) === "1") {
+showApp();
+}
+</script>
+</body>
+</html>
