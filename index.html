@@ -34,6 +34,8 @@
   --danger-soft: #fdecec;
   --warning: #f59e0b;
   --warning-soft: #fef4e2;
+  --critical: #9333ea;
+  --critical-soft: #f3e8ff;
   --info: #19b3c6;
   --info-soft: #def7fa;
   --info-text: #00525b;
@@ -74,6 +76,8 @@
   --danger-soft: rgba(240, 104, 104, 0.12);
   --warning: #f5b148;
   --warning-soft: rgba(245, 177, 72, 0.12);
+  --critical: #c084fc;
+  --critical-soft: rgba(192, 132, 252, 0.15);
   --info: #4dd6e6;
   --info-soft: rgba(77, 214, 230, 0.12);
   --info-text: #b0e4ec;
@@ -103,13 +107,11 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-input); }
 
-/* Connection banner */
 .conn-banner { position: fixed; top: 0; left: 0; right: 0; padding: 8px 16px; text-align: center; font-size: 13px; font-weight: 500; z-index: 200; }
 .conn-error { background: var(--danger); color: white; }
 .conn-syncing { background: var(--warning); color: white; }
 .conn-ok { display: none; }
 
-/* Login */
 .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; }
 .login-card {
   background: var(--surface);
@@ -165,7 +167,6 @@ body {
   font-weight: 600;
 }
 
-/* Topbar */
 .topbar {
   background: var(--surface);
   backdrop-filter: blur(20px);
@@ -199,7 +200,6 @@ body {
   .sidebar { order: 2; }
 }
 
-/* Sidebar */
 .sidebar {
   background: var(--sidebar-bg);
   backdrop-filter: blur(20px);
@@ -235,6 +235,7 @@ body {
   transition: opacity 0.18s;
 }
 .dept-stat.has-expired::before { background: var(--danger); opacity: 1; }
+.dept-stat.has-critical::before { background: var(--critical); opacity: 1; }
 .dept-stat.has-soon::before { background: var(--warning); opacity: 1; }
 .dept-stat.has-ok::before { background: var(--success); opacity: 0.7; }
 .dept-stat:hover { background: var(--surface-hover); border-color: var(--border); transform: translateX(2px); }
@@ -247,6 +248,7 @@ body {
 .dept-stat-row { display: flex; justify-content: space-between; color: var(--text-muted); }
 .dept-stat-row .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 .dot-expired { background: var(--danger); }
+.dot-critical { background: var(--critical); }
 .dot-soon { background: var(--warning); }
 .dot-ok { background: var(--success); }
 .dot-dekret { background: var(--info); }
@@ -269,7 +271,6 @@ body {
 .sidebar-total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; font-size: 13px; }
 .sidebar-total-row strong { font-size: 16px; color: var(--text); font-weight: 700; }
 
-/* Main with accent bar */
 .main {
   min-width: 0;
   position: relative;
@@ -285,7 +286,6 @@ body {
   opacity: 0.7;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   gap: 4px;
@@ -326,7 +326,6 @@ body {
 .tab-badge { background: rgba(255,255,255,0.25); padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
 .tab:not(.active) .tab-badge { background: var(--surface-2); color: var(--text-muted); }
 
-/* Top stats */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
 .stat {
   background: var(--surface);
@@ -352,9 +351,35 @@ body {
 .stat-value { font-size: 28px; font-weight: 800; margin-top: 4px; color: var(--text); letter-spacing: -0.02em; }
 .stat-total::before { background: var(--primary-gradient); }
 .stat-expired::before { background: var(--danger); }
-.stat-soon::before { background: var(--warning); }
 .stat-ok::before { background: var(--success); }
 .stat-dekret::before { background: var(--info); }
+
+/* Split stat card: orange (<2 мес) + violet (<1 мес) */
+.stat-split {
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+}
+.stat-split::before { display: none; }
+.stat-split .half {
+  padding: 14px 14px 14px 18px;
+  position: relative;
+}
+.stat-split .half + .half {
+  padding-left: 18px;
+  border-left: 1px solid var(--border);
+}
+.stat-split .half::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.stat-split .half-soon::before { background: var(--warning); }
+.stat-split .half-critical::before { background: var(--critical); }
+.stat-split .half-soon .stat-label { color: var(--warning); }
+.stat-split .half-critical .stat-label { color: var(--critical); }
 
 .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
 .controls input, .controls select {
@@ -395,7 +420,6 @@ body {
 .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 9px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-/* Table */
 .table-wrap {
   background: var(--surface);
   backdrop-filter: blur(20px);
@@ -409,6 +433,9 @@ body {
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead { position: sticky; top: 0; background: var(--surface-2); z-index: 10; }
 th { padding: 12px 10px; text-align: left; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); white-space: nowrap; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { color: var(--primary); }
+th.sortable.active { color: var(--primary); }
 td { padding: 11px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
 tr { cursor: pointer; transition: background 0.12s; }
 tbody tr:nth-child(even) td { background: var(--surface-2); }
@@ -416,6 +443,7 @@ tr:hover td { background: var(--surface-hover); }
 tbody tr:last-child td { border-bottom: none; }
 .status-cell { display: inline-block; font-weight: 700; text-align: center; padding: 4px 10px; border-radius: 14px; font-size: 11px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.4px; }
 .status-expired { background: var(--danger-soft); color: var(--danger); }
+.status-critical { background: var(--critical-soft); color: var(--critical); }
 .status-soon { background: var(--warning-soft); color: var(--warning); }
 .status-ok { background: var(--success-soft); color: var(--success); }
 .status-dekret { background: var(--info-soft); color: var(--info-text); }
@@ -425,7 +453,6 @@ tbody tr:last-child td { border-bottom: none; }
 .purpose-tag { display: inline-block; padding: 2px 8px; background: var(--primary-soft); color: var(--primary); border-radius: 6px; font-size: 11px; margin: 1px; font-weight: 600; }
 .file-icon { font-size: 14px; }
 
-/* Modal */
 .modal-overlay {
   position: fixed; inset: 0;
   background: var(--modal-overlay);
@@ -486,14 +513,12 @@ tbody tr:last-child td { border-bottom: none; }
 .modal .purpose-grid label:hover { background: var(--surface-hover); transform: translateY(-1px); }
 .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px; }
 
-/* Confirm modal */
 .confirm-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--danger-soft); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px; }
 .confirm-modal { max-width: 400px; text-align: center; }
 .confirm-modal h2 { font-size: 19px; margin-bottom: 8px; }
 .confirm-modal .modal-sub { margin-bottom: 20px; }
 .confirm-modal .modal-actions { justify-content: center; }
 
-/* File upload */
 .file-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .file-row {
   display: flex; align-items: center; gap: 10px;
@@ -574,7 +599,6 @@ tbody tr:last-child td { border-bottom: none; }
 </div>
 
 <div class="layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <h3>📊 По подразделениям</h3>
     <div id="sidebarDepts"></div>
@@ -583,20 +607,29 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="sidebar-total-label">Всего по компании</div>
       <div class="sidebar-total-row"><span>Сотрудников</span><strong id="globalTotal">0</strong></div>
       <div class="sidebar-total-row"><span><span class="dot dot-expired"></span>Просрочено</span><strong id="globalExpired">0</strong></div>
-      <div class="sidebar-total-row"><span><span class="dot dot-soon"></span>Истекает</span><strong id="globalSoon">0</strong></div>
+      <div class="sidebar-total-row"><span><span class="dot dot-critical"></span>Критично &lt;1 мес.</span><strong id="globalCritical">0</strong></div>
+      <div class="sidebar-total-row"><span><span class="dot dot-soon"></span>&lt;2 мес.</span><strong id="globalSoon">0</strong></div>
       <div class="sidebar-total-row"><span><span class="dot dot-ok"></span>Действующих</span><strong id="globalOk">0</strong></div>
       <div class="sidebar-total-row"><span><span class="dot dot-dekret"></span>Декрет</span><strong id="globalDekret">0</strong></div>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="tabs" id="deptTabs"></div>
 
     <div class="stats">
       <div class="stat stat-total"><div class="stat-label">Всего в отделе</div><div class="stat-value" id="statTotal">0</div></div>
       <div class="stat stat-expired"><div class="stat-label">Просрочено</div><div class="stat-value" id="statExpired">0</div></div>
-      <div class="stat stat-soon"><div class="stat-label">Истекает (&lt;2 мес.)</div><div class="stat-value" id="statSoon">0</div></div>
+      <div class="stat stat-split">
+        <div class="half half-soon">
+          <div class="stat-label">&lt;2 мес.</div>
+          <div class="stat-value" id="statSoon">0</div>
+        </div>
+        <div class="half half-critical">
+          <div class="stat-label">&lt;1 мес.</div>
+          <div class="stat-value" id="statCritical">0</div>
+        </div>
+      </div>
       <div class="stat stat-ok"><div class="stat-label">Действующих</div><div class="stat-value" id="statOk">0</div></div>
       <div class="stat stat-dekret"><div class="stat-label">Декрет</div><div class="stat-value" id="statDekret">0</div></div>
     </div>
@@ -606,6 +639,7 @@ tbody tr:last-child td { border-bottom: none; }
       <select id="filterStatus" onchange="render()">
         <option value="all">Все статусы</option>
         <option value="expired">Просрочен</option>
+        <option value="critical">Меньше 1 месяца</option>
         <option value="soon">Меньше 2 месяцев</option>
         <option value="ok">Больше 2 месяцев</option>
         <option value="dekret">Декрет</option>
@@ -615,6 +649,8 @@ tbody tr:last-child td { border-bottom: none; }
         <option value="lastname-desc">Фамилия Я-А</option>
         <option value="date-asc">Срок: ближайшие</option>
         <option value="date-desc">Срок: дальние</option>
+        <option value="status-worst">Статус (худшие сверху)</option>
+        <option value="status-best">Статус (лучшие сверху)</option>
       </select>
     </div>
 
@@ -669,7 +705,6 @@ tbody tr:last-child td { border-bottom: none; }
     <label for="formDekret">Декрет (приоритет над сроком)</label>
   </div>
 
-  <!-- File uploads -->
   <div class="file-section" id="fileSection">
     <label style="margin-top:0">📎 Документы</label>
     <div class="file-row">
@@ -731,7 +766,6 @@ tbody tr:last-child td { border-bottom: none; }
 </div>
 
 <script>
-// ==================== CONFIG ====================
 const SUPABASE_URL = "https://fpvusjatdwqzedhgljru.supabase.co";
 const SUPABASE_KEY = "sb_publishable_GnvmwL6B_MPvDdiqDRljmA_VrfsX7da";
 const TABLE = "certificates";
@@ -750,12 +784,13 @@ const DEPARTMENTS = [
 { id: "kdl", label: "КДЛ", icon: "🧪" },
 ];
 
+const STATUS_RANK = { expired: 0, critical: 1, soon: 2, ok: 3, dekret: 4, none: 5 };
+
 let data = [];
 let currentDept = "admin";
 let realtimeChannel = null;
 let confirmCallback = null;
 
-// ==================== THEME ====================
 function applyTheme(theme) {
 document.documentElement.setAttribute("data-theme", theme);
 const btn = document.getElementById("themeBtn");
@@ -772,7 +807,6 @@ applyTheme(next);
 }
 applyTheme(localStorage.getItem(THEME_KEY) || "light");
 
-// ==================== CONNECTION BANNER ====================
 function setBanner(state, msg) {
 const el = document.getElementById("connBanner");
 el.className = "conn-banner";
@@ -781,7 +815,6 @@ else if (state === "syncing") { el.classList.add("conn-syncing"); el.textContent
 else { el.classList.add("conn-ok"); el.textContent = ""; }
 }
 
-// ==================== CONFIRM MODAL ====================
 function showConfirm(message, callback) {
 document.getElementById("confirmMessage").textContent = message;
 confirmCallback = callback;
@@ -796,7 +829,27 @@ if (confirmCallback) confirmCallback();
 closeConfirmModal();
 });
 
-// ==================== SUPABASE API ====================
+// Click outside modal to close
+function setupOverlayClose(overlayId, closeFn) {
+document.getElementById(overlayId).addEventListener("click", (e) => {
+  if (e.target.id === overlayId) closeFn();
+});
+}
+setupOverlayClose("formModal", () => closeFormModal());
+setupOverlayClose("renewModal", () => closeRenewModal());
+setupOverlayClose("confirmModal", () => closeConfirmModal());
+
+// ESC to close any open modal
+document.addEventListener("keydown", (e) => {
+if (e.key !== "Escape") return;
+const formM = document.getElementById("formModal");
+const renewM = document.getElementById("renewModal");
+const confM = document.getElementById("confirmModal");
+if (!confM.classList.contains("hidden")) { closeConfirmModal(); return; }
+if (!renewM.classList.contains("hidden")) { closeRenewModal(); return; }
+if (!formM.classList.contains("hidden")) { closeFormModal(); return; }
+});
+
 async function sbFetch(path, options = {}) {
 const url = SUPABASE_URL + "/rest/v1/" + path;
 const headers = {
@@ -827,7 +880,6 @@ return await sbFetch(TABLE, {
 });
 }
 
-// ==================== STORAGE API ====================
 async function storageUpload(path, file) {
 const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`;
 const res = await fetch(url, {
@@ -893,7 +945,6 @@ return {
 };
 }
 
-// ==================== REALTIME ====================
 function startRealtime() {
 if (realtimeChannel) return;
 try {
@@ -943,7 +994,6 @@ try {
 } catch (err) {}
 }
 
-// ==================== AUTH ====================
 function login() {
 const u = document.getElementById("loginUser").value.trim();
 const p = document.getElementById("loginPass").value;
@@ -977,7 +1027,6 @@ startRealtime();
 document.getElementById("loginPass").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
 document.getElementById("loginUser").addEventListener("keypress", e => { if (e.key === "Enter") document.getElementById("loginPass").focus(); });
 
-// ==================== DATA OPS ====================
 async function refreshData() {
 setBanner("syncing", "Загрузка из облака...");
 try {
@@ -993,7 +1042,6 @@ try {
 
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
-// ==================== STATUS ====================
 function computeStatus(person) {
 if (person.dekret) return { key: "dekret", label: "Декрет", cls: "status-dekret" };
 if (!person.expiry) return { key: "none", label: "—", cls: "" };
@@ -1001,6 +1049,7 @@ const today = new Date(); today.setHours(0,0,0,0);
 const exp = new Date(person.expiry); exp.setHours(0,0,0,0);
 const diffDays = Math.floor((exp - today) / (1000*60*60*24));
 if (diffDays < 0) return { key: "expired", label: "Просрочен", cls: "status-expired" };
+if (diffDays <= 30) return { key: "critical", label: "<1 мес.", cls: "status-critical" };
 if (diffDays <= 61) return { key: "soon", label: "<2 мес.", cls: "status-soon" };
 return { key: "ok", label: "Действует", cls: "status-ok" };
 }
@@ -1011,20 +1060,21 @@ return `${d}.${m}.${y}`;
 }
 function deptStats(deptId) {
 const arr = data.filter(p => (p.dept || "admin") === deptId);
-const stats = { total: arr.length, expired: 0, soon: 0, ok: 0, dekret: 0 };
-arr.forEach(p => { stats[computeStatus(p).key] = (stats[computeStatus(p).key] || 0) + 1; });
+const stats = { total: arr.length, expired: 0, critical: 0, soon: 0, ok: 0, dekret: 0 };
+arr.forEach(p => { const k = computeStatus(p).key; if (stats[k] !== undefined) stats[k]++; });
 return stats;
 }
 
-// ==================== RENDER ====================
 function renderSidebar() {
 const wrap = document.getElementById("sidebarDepts");
-let totalAll = 0, totalExpired = 0, totalSoon = 0, totalOk = 0, totalDekret = 0;
+let totalAll = 0, totalExpired = 0, totalCritical = 0, totalSoon = 0, totalOk = 0, totalDekret = 0;
 wrap.innerHTML = DEPARTMENTS.map(d => {
   const s = deptStats(d.id);
-  totalAll += s.total; totalExpired += s.expired; totalSoon += s.soon; totalOk += s.ok; totalDekret += s.dekret;
+  totalAll += s.total; totalExpired += s.expired; totalCritical += s.critical;
+  totalSoon += s.soon; totalOk += s.ok; totalDekret += s.dekret;
   let cls = "";
   if (s.expired > 0) cls = "has-expired";
+  else if (s.critical > 0) cls = "has-critical";
   else if (s.soon > 0) cls = "has-soon";
   else if (s.ok > 0) cls = "has-ok";
   return `<div class="dept-stat ${cls} ${currentDept === d.id ? "active" : ""}" onclick="switchDept('${d.id}')">
@@ -1034,7 +1084,8 @@ wrap.innerHTML = DEPARTMENTS.map(d => {
     </div>
     <div class="dept-stat-rows">
       ${s.expired ? `<div class="dept-stat-row"><span><span class="dot dot-expired"></span>Просрочено</span><span>${s.expired}</span></div>` : ""}
-      ${s.soon ? `<div class="dept-stat-row"><span><span class="dot dot-soon"></span>Истекает</span><span>${s.soon}</span></div>` : ""}
+      ${s.critical ? `<div class="dept-stat-row"><span><span class="dot dot-critical"></span>&lt;1 мес.</span><span>${s.critical}</span></div>` : ""}
+      ${s.soon ? `<div class="dept-stat-row"><span><span class="dot dot-soon"></span>&lt;2 мес.</span><span>${s.soon}</span></div>` : ""}
       ${s.ok ? `<div class="dept-stat-row"><span><span class="dot dot-ok"></span>Действующих</span><span>${s.ok}</span></div>` : ""}
       ${s.dekret ? `<div class="dept-stat-row"><span><span class="dot dot-dekret"></span>Декрет</span><span>${s.dekret}</span></div>` : ""}
       ${s.total === 0 ? `<div class="dept-stat-row" style="font-style:italic;font-size:11px">пусто</div>` : ""}
@@ -1043,6 +1094,7 @@ wrap.innerHTML = DEPARTMENTS.map(d => {
 }).join("");
 document.getElementById("globalTotal").textContent = totalAll;
 document.getElementById("globalExpired").textContent = totalExpired;
+document.getElementById("globalCritical").textContent = totalCritical;
 document.getElementById("globalSoon").textContent = totalSoon;
 document.getElementById("globalOk").textContent = totalOk;
 document.getElementById("globalDekret").textContent = totalDekret;
@@ -1064,10 +1116,35 @@ render();
 
 function renderTableHead() {
 const head = document.getElementById("tableHead");
-const cols = ["<th>№</th>","<th>Фамилия</th>","<th>Имя</th>","<th>Отчество</th>","<th>Должность</th>","<th>Казн.</th>"];
+const sort = document.getElementById("sortBy").value;
+let statusArrow = "";
+let statusClass = "sortable";
+if (sort === "status-worst") { statusArrow = " ▼"; statusClass += " active"; }
+else if (sort === "status-best") { statusArrow = " ▲"; statusClass += " active"; }
+
+const cols = [
+  "<th>№</th>",
+  "<th>Фамилия</th>",
+  "<th>Имя</th>",
+  "<th>Отчество</th>",
+  "<th>Должность</th>",
+  "<th>Казн.</th>"
+];
 if (currentDept === "admin") cols.push("<th>Цель</th>");
-cols.push("<th>📎</th>","<th>Срок</th>","<th>Старый срок</th>","<th>Статус</th>","<th>Действия</th>");
+cols.push(
+  "<th>📎</th>",
+  "<th>Срок</th>",
+  "<th>Старый срок</th>",
+  `<th class="${statusClass}" onclick="toggleStatusSort()" title="Сортировать по статусу">Статус${statusArrow}</th>`,
+  "<th>Действия</th>"
+);
 head.innerHTML = cols.join("");
+}
+
+function toggleStatusSort() {
+const sel = document.getElementById("sortBy");
+sel.value = sel.value === "status-worst" ? "status-best" : "status-worst";
+render();
 }
 
 function render() {
@@ -1098,6 +1175,18 @@ list.sort((a,b) => {
   if (sort === "lastname-desc") return (b.lastname||"").localeCompare(a.lastname||"", "ru");
   if (sort === "date-asc") return (a.expiry||"9999") < (b.expiry||"9999") ? -1 : 1;
   if (sort === "date-desc") return (a.expiry||"0") > (b.expiry||"0") ? -1 : 1;
+  if (sort === "status-worst") {
+    const ra = STATUS_RANK[a._status.key] ?? 99;
+    const rb = STATUS_RANK[b._status.key] ?? 99;
+    if (ra !== rb) return ra - rb;
+    return (a.lastname||"").localeCompare(b.lastname||"", "ru");
+  }
+  if (sort === "status-best") {
+    const ra = STATUS_RANK[a._status.key] ?? 99;
+    const rb = STATUS_RANK[b._status.key] ?? 99;
+    if (ra !== rb) return rb - ra;
+    return (a.lastname||"").localeCompare(b.lastname||"", "ru");
+  }
   return 0;
 });
 
@@ -1143,6 +1232,7 @@ const deptData = data.filter(p => (p.dept || "admin") === currentDept);
 const all = deptData.map(p => computeStatus(p));
 document.getElementById("statTotal").textContent = deptData.length;
 document.getElementById("statExpired").textContent = all.filter(s => s.key === "expired").length;
+document.getElementById("statCritical").textContent = all.filter(s => s.key === "critical").length;
 document.getElementById("statSoon").textContent = all.filter(s => s.key === "soon").length;
 document.getElementById("statOk").textContent = all.filter(s => s.key === "ok").length;
 document.getElementById("statDekret").textContent = all.filter(s => s.key === "dekret").length;
@@ -1151,7 +1241,6 @@ function escapeHtml(s) {
 return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
 }
 
-// ==================== FORM ====================
 function togglePurposeField() {
 const dept = document.getElementById("formDept").value;
 document.getElementById("purposeWrap").style.display = dept === "admin" ? "block" : "none";
@@ -1270,7 +1359,6 @@ try {
 }
 }
 
-// ==================== FILE UPLOAD ====================
 async function uploadFile(event, kind) {
 const file = event.target.files[0];
 if (!file) return;
@@ -1338,7 +1426,6 @@ showConfirm(`Удалить файл "${kind === "scan" ? "Справка" : "З
 });
 }
 
-// ==================== DELETE ROW ====================
 function deleteRow(id) {
 const p = data.find(x => x.id === id);
 if (!p) return;
@@ -1360,7 +1447,6 @@ showConfirm(`Удалить запись «${fio}»? Все прикреплён
 });
 }
 
-// ==================== RENEW ====================
 function openRenewModal(id) {
 const p = data.find(x => x.id === id);
 if (!p) return;
@@ -1398,7 +1484,6 @@ try {
 }
 }
 
-// ==================== EXPORT / IMPORT ====================
 function exportJSON() {
 const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
 const url = URL.createObjectURL(blob);
@@ -1440,7 +1525,6 @@ reader.readAsText(file);
 event.target.value = "";
 }
 
-// ==================== INIT ====================
 if (localStorage.getItem(AUTH_KEY) === "1") {
 showApp();
 }
