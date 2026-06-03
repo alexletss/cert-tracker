@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Cert Tracker — Перенос данных</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background: #f5f5f5; }
+h1 { color: #1e40af; }
+.box { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 16px; }
+label { display: block; margin: 12px 0 4px; font-weight: 600; color: #333; }
+input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+button { background: linear-gradient(135deg, #60a5fa, #1e40af); color: white; border: none; padding: 14px 28px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 16px; }
+button:hover { opacity: 0.9; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+#log { background: #1a1a1a; color: #0f0; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; height: 400px; overflow-y: auto; white-space: pre-wrap; }
+.row { display: flex; gap: 12px; }
+.row > div { flex: 1; }
+.note { background: #fff3cd; padding: 12px; border-radius: 6px; color: #856404; font-size: 14px; margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<h1>🔄 Перенос данных из облака на локальный сервер</h1>
+
+<div class="box">
+<h3>Откуда (Supabase облако)</h3>
+<label>URL источника</label>
+<input id="srcUrl" value="https://fpvusjatdwqzedhgljru.supabase.co">
+<label>Anon Key</label>
+<input id="srcKey" value="sb_publishable_GnvmwL6B_MPvDdiqDRljmA_VrfsX7da">
+</div>
+
+<div class="box">
+<h3>Куда (локальный сервер)</h3>
+<label>URL приёмника</label>
+<input id="dstUrl" value="http://localhost">
+<div class="note">💡 Если запускаешь с другого компьютера сети, поменяй localhost на IP сервера, например http://192.168.1.50</div>
+</div>
+
+<div class="box">
+<button id="startBtn" onclick="run()">🚀 Начать перенос</button>
+</div>
+
+<div class="box">
+<h3>Лог</h3>
+<div id="log">Готов к запуску. Нажми кнопку выше.</div>
+</div>
+
+<script>
+const log = (m) => {
+document.getElementById('log').textContent += '
+' + m;
+document.getElementById('log').scrollTop = 99999;
+};
+
+const TABLES = ['users', 'certificates', 'purposes', 'audit_log'];
+
+async function fetchSrc(table, srcUrl, srcKey) {
+const r = await fetch(`${srcUrl}/rest/v1/${table}?select=*`, {
+  headers: { 'apikey': srcKey, 'Authorization': `Bearer ${srcKey}` }
+});
+if (!r.ok) throw new Error(`Источник ${table}: HTTP ${r.status}`);
+return r.json();
+}
+
+async function pushDst(table, rows, dstUrl) {
+if (rows.length === 0) { log(`  ⚠️ ${table}: пусто, пропускаю`); return; }
+const r = await fetch(`${dstUrl}/rest/v1/${table}`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Prefer': 'resolution=merge-duplicates'
+  },
+  body: JSON.stringify(rows)
+});
+if (!r.ok) {
+  const txt = await r.text();
+  throw new Error(`Приёмник ${table}: HTTP ${r.status} — ${txt}`);
+}
+log(`  ✅ ${table}: перенесено ${rows.length} записей`);
+}
+
+async function run() {
+const btn = document.getElementById('startBtn');
+btn.disabled = true;
+document.getElementById('log').textContent = '=== ПЕРЕНОС ДАННЫХ ===';
+
+const srcUrl = document.getElementById('srcUrl').value.trim().replace(/\/$/, '');
+const srcKey = document.getElementById('srcKey').value.trim();
+const dstUrl = document.getElementById('dstUrl').value.trim().replace(/\/$/, '');
+
+try {
+  log('
+📡 Проверяю связь с источником...');
+  const test = await fetch(`${srcUrl}/rest/v1/`, { headers: { 'apikey': srcKey } });
+  log(`  Источник: HTTP ${test.status}`);
+
+  log('
+📡 Проверяю связь с приёмником...');
+  const test2 = await fetch(`${dstUrl}/rest/v1/`);
+  log(`  Приёмник: HTTP ${test2.status}`);
+
+  for (const table of TABLES) {
+    log(`
+📦 Таблица: ${table}`);
+    log(`  → Качаю с облака...`);
+    const rows = await fetchSrc(table, srcUrl, srcKey);
+    log(`  → Получено ${rows.length} записей`);
+    log(`  → Загружаю в локальную базу...`);
+    await pushDst(table, rows, dstUrl);
+  }
+
+  log('
+=== ГОТОВО ===');
+  log('✅ Все данные перенесены успешно!');
+  log('Обнови страницу основного сайта (Ctrl+F5), чтобы увидеть данные.');
+} catch (e) {
+  log(`
+❌ ОШИБКА: ${e.message}`);
+  log('Проверь URL и ключи, а также что оба сервера запущены.');
+} finally {
+  btn.disabled = false;
+}
+}
+</script>
+
+</body>
+</html>
