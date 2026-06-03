@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Перенос данных в локальную базу</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f172a; min-height: 100vh; padding: 30px 20px; color: #e2e8f0; }
+.container { max-width: 800px; margin: 0 auto; }
+.card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; margin-bottom: 18px; }
+h1 { font-size: 26px; margin-bottom: 8px; }
+.sub { color: #94a3b8; margin-bottom: 18px; font-size: 14px; }
+label { display: block; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 14px; }
+input { width: 100%; padding: 12px 14px; background: #0f172a; border: 1.5px solid #334155; border-radius: 10px; color: #e2e8f0; font-size: 14px; font-family: ui-monospace, monospace; }
+input:focus { outline: none; border-color: #3b82f6; }
+button { padding: 12px 24px; background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 20px; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.log { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px; font-family: ui-monospace, monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; line-height: 1.5; }
+.log-info { color: #cbd5e1; }
+.log-ok { color: #34d399; }
+.log-err { color: #f87171; }
+.log-warn { color: #fbbf24; }
+.progress { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; margin-top: 16px; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); width: 0%; transition: width 0.3s; }
+.stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 13px; }
+.stat-row:last-child { border-bottom: none; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.badge-todo { background: #475569; color: #cbd5e1; }
+.badge-done { background: #10b981; color: white; }
+.badge-err { background: #ef4444; color: white; }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card">
+  <h1>📦 Перенос данных в локальную базу</h1>
+  <div class="sub">Скрипт выкачивает все данные из облачного Supabase и заливает в твой локальный сервер.</div>
+
+  <label>URL облачного Supabase (источник)</label>
+  <input type="text" id="srcUrl" value="https://fpvusjatdwqzedhgljru.supabase.co">
+
+  <label>API-ключ облачного Supabase (источник)</label>
+  <input type="text" id="srcKey" value="sb_publishable_GnvmwL6B_MPvDdiqDRljmA_VrfsX7da">
+
+  <label>URL локального сервера (Kong)</label>
+  <input type="text" id="dstUrl" placeholder="http://192.168.1.50:8000">
+
+  <label>API-ключ локального сервера (любой, локально не проверяется)</label>
+  <input type="text" id="dstKey" value="local-dev-key">
+
+  <button onclick="startMigration()" id="goBtn">🚀 Начать перенос</button>
+</div>
+
+<div class="card" id="statusCard" style="display:none">
+  <h1 style="font-size:18px">📊 Прогресс</h1>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div id="statusList" style="margin-top:16px">
+    <div class="stat-row"><span>Цели использования (purposes)</span><span class="badge badge-todo" id="st-purposes">ожидание</span></div>
+    <div class="stat-row"><span>Пользователи (users)</span><span class="badge badge-todo" id="st-users">ожидание</span></div>
+    <div class="stat-row"><span>Сертификаты (certificates)</span><span class="badge badge-todo" id="st-certificates">ожидание</span></div>
+    <div class="stat-row"><span>История изменений (audit_log)</span><span class="badge badge-todo" id="st-audit">ожидание</span></div>
+    <div class="stat-row"><span>Файлы (cert-files bucket)</span><span class="badge badge-todo" id="st-files">ожидание</span></div>
+  </div>
+</div>
+
+<div class="card" id="logCard" style="display:none">
+  <h1 style="font-size:18px">📜 Лог</h1>
+  <div class="log" id="log"></div>
+</div>
+</div>
+
+<script>
+const SRC_BUCKET = "cert-files";
+const DST_BUCKET = "cert-files";
+
+let logEl, progressBar;
+
+function log(msg, type) {
+type = type || "info";
+const line = document.createElement("div");
+line.className = "log-" + type;
+line.textContent = "[" + new Date().toLocaleTimeString() + "] " + msg;
+logEl.appendChild(line);
+logEl.scrollTop = logEl.scrollHeight;
+}
+function setStatus(id, text, cls) {
+const el = document.getElementById("st-" + id);
+el.textContent = text;
+el.className = "badge " + cls;
+}
+function setProgress(pct) { progressBar.style.width = pct + "%"; }
+
+async function fetchAll(baseUrl, key, table) {
+const res = await fetch(baseUrl + "/rest/v1/" + table + "?select=*", {
+  headers: { "apikey": key, "Authorization": "Bearer " + key }
+});
+if (!res.ok) throw new Error(table + ": HTTP " + res.status);
+return await res.json();
+}
+async function pushAll(baseUrl, key, table, rows) {
+if (rows.length === 0) return 0;
+let inserted = 0;
+const chunkSize = 50;
+for (let i = 0; i < rows.length; i += chunkSize) {
+  const chunk = rows.slice(i, i + chunkSize);
+  const res = await fetch(baseUrl + "/rest/v1/" + table, {
+    method: "POST",
+    headers: {
+      "apikey": key,
+      "Authorization": "Bearer " + key,
+      "Content-Type": "application/json",
+      "Prefer": "resolution=merge-duplicates"
+    },
+    body: JSON.stringify(chunk)
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(table + " chunk " + i + ": HTTP " + res.status + " — " + txt);
+  }
+  inserted += chunk.length;
+}
+return inserted;
+}
+
+async function migrateFiles(srcUrl, srcKey, dstUrl, dstKey) {
+// Get all certificates with file URLs
+const certs = await fetchAll(srcUrl, srcKey, "certificates");
+const fileTasks = [];
+for (const c of certs) {
+  if (c.scan_url) fileTasks.push({ url: c.scan_url, name: c.scan_name, id: c.id, kind: "scan" });
+  if (c.application_url) fileTasks.push({ url: c.application_url, name: c.application_name, id: c.id, kind: "application" });
+}
+log("Найдено файлов для переноса: " + fileTasks.length);
+if (fileTasks.length === 0) return { ok: 0, fail: 0 };
+
+let ok = 0, fail = 0;
+for (const t of fileTasks) {
+  try {
+    const path = t.url.split("/public/" + SRC_BUCKET + "/")[1];
+    if (!path) { log("Пропущен (нет пути): " + t.url, "warn"); fail++; continue; }
+    const fileRes = await fetch(t.url);
+    if (!fileRes.ok) { log("Не скачался: " + path + " — HTTP " + fileRes.status, "warn"); fail++; continue; }
+    const blob = await fileRes.blob();
+    const upRes = await fetch(dstUrl + "/storage/v1/object/" + DST_BUCKET + "/" + path, {
+      method: "POST",
+      headers: { "apikey": dstKey, "Authorization": "Bearer " + dstKey, "x-upsert": "true", "Content-Type": blob.type || "application/octet-stream" },
+      body: blob
+    });
+    if (!upRes.ok) { log("Не загрузился в локальный: " + path + " — HTTP " + upRes.status, "warn"); fail++; continue; }
+    ok++;
+    log("Перенесён: " + path);
+  } catch (err) {
+    log("Ошибка " + t.id + ": " + err.message, "err");
+    fail++;
+  }
+}
+return { ok: ok, fail: fail };
+}
+
+async function startMigration() {
+document.getElementById("goBtn").disabled = true;
+document.getElementById("statusCard").style.display = "block";
+document.getElementById("logCard").style.display = "block";
+logEl = document.getElementById("log");
+progressBar = document.getElementById("progressBar");
+
+const srcUrl = document.getElementById("srcUrl").value.trim().replace(/\/$/, "");
+const srcKey = document.getElementById("srcKey").value.trim();
+const dstUrl = document.getElementById("dstUrl").value.trim().replace(/\/$/, "");
+const dstKey = document.getElementById("dstKey").value.trim();
+
+if (!srcUrl || !srcKey || !dstUrl) {
+  alert("Заполни все поля");
+  document.getElementById("goBtn").disabled = false;
+  return;
+}
+
+log("=== СТАРТ ПЕРЕНОСА ===");
+log("Источник: " + srcUrl);
+log("Цель: " + dstUrl);
+
+try {
+  // 1. purposes
+  setStatus("purposes", "загрузка...", "badge-todo");
+  log("Качаю purposes...");
+  const purposes = await fetchAll(srcUrl, srcKey, "purposes");
+  log("Получено: " + purposes.length + " целей");
+  const pCnt = await pushAll(dstUrl, dstKey, "purposes", purposes);
+  setStatus("purposes", pCnt + " шт.", "badge-done");
+  setProgress(20);
+
+  // 2. users
+  setStatus("users", "загрузка...", "badge-todo");
+  log("Качаю users...");
+  const users = await fetchAll(srcUrl, srcKey, "users");
+  log("Получено: " + users.length + " пользователей");
+  const uCnt = await pushAll(dstUrl, dstKey, "users", users);
+  setStatus("users", uCnt + " шт.", "badge-done");
+  setProgress(40);
+
+  // 3. certificates
+  setStatus("certificates", "загрузка...", "badge-todo");
+  log("Качаю certificates...");
+  const certs = await fetchAll(srcUrl, srcKey, "certificates");
+  log("Получено: " + certs.length + " карточек");
+  const cCnt = await pushAll(dstUrl, dstKey, "certificates", certs);
+  setStatus("certificates", cCnt + " шт.", "badge-done");
+  setProgress(60);
+
+  // 4. audit_log
+  setStatus("audit", "загрузка...", "badge-todo");
+  log("Качаю audit_log...");
+  const audit = await fetchAll(srcUrl, srcKey, "audit_log");
+  log("Получено: " + audit.length + " записей");
+  // strip id (bigserial — let local generate)
+  const auditStripped = audit.map(function(a){ const c = Object.assign({}, a); delete c.id; return c; });
+  const aCnt = await pushAll(dstUrl, dstKey, "audit_log", auditStripped);
+  setStatus("audit", aCnt + " шт.", "badge-done");
+  setProgress(75);
+
+  // 5. files
+  setStatus("files", "перенос...", "badge-todo");
+  log("Переношу файлы...");
+  const fileRes = await migrateFiles(srcUrl, srcKey, dstUrl, dstKey);
+  setStatus("files", fileRes.ok + " ok / " + fileRes.fail + " err", fileRes.fail > 0 ? "badge-err" : "badge-done");
+  setProgress(100);
+
+  log("=== ГОТОВО ===", "ok");
+  log("purposes: " + pCnt + ", users: " + uCnt + ", certs: " + cCnt + ", audit: " + aCnt + ", files: " + fileRes.ok + "/" + (fileRes.ok+fileRes.fail), "ok");
+} catch (err) {
+  log("ОШИБКА: " + err.message, "err");
+} finally {
+  document.getElementById("goBtn").disabled = false;
+}
+}
+</script>
+</body>
+</html>
